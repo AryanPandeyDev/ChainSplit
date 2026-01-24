@@ -63,7 +63,7 @@ help:
 	@echo "  deploy-mumbai  - Deploy to Polygon Mumbai"
 	@echo "  deploy-base-sepolia - Deploy to Base Sepolia"
 	@echo ""
-	@echo "Interactions (requires GROUP_ADDRESS, etc.):"
+	@echo "Escrow Mode Interactions:"
 	@echo "  create-group   - Create new escrow group"
 	@echo "  deposit        - Deposit to group"
 	@echo "  create-expense - Create expense"
@@ -71,6 +71,14 @@ help:
 	@echo "  propose-close  - Propose/vote group closure"
 	@echo "  withdraw       - Withdraw from closed group"
 	@echo "  view-group     - View group info"
+	@echo ""
+	@echo "Direct Mode Interactions:"
+	@echo "  direct-group   - Create new direct group"
+	@echo "  direct-expense - Create direct expense"
+	@echo "  direct-accept  - Accept direct expense"
+	@echo "  direct-settle  - Settle direct expense"
+	@echo "  direct-withdraw- Withdraw from direct group"
+	@echo "  direct-view    - View direct group info"
 	@echo ""
 	@echo "Networks: anvil, sepolia, mumbai, polygon, base, base-sepolia"
 	@echo ""
@@ -180,6 +188,28 @@ withdraw:
 
 view-group:
 	forge script script/Interactions.s.sol:ViewGroupInfo $(FORGE_FLAGS)
+
+#=============================================================================
+# DIRECT MODE INTERACTIONS
+#=============================================================================
+
+direct-group:
+	forge script script/Interactions.s.sol:CreateDirectGroup $(BROADCAST_FLAGS)
+
+direct-expense:
+	forge script script/Interactions.s.sol:CreateDirectExpense $(BROADCAST_FLAGS)
+
+direct-accept:
+	forge script script/Interactions.s.sol:AcceptDirectExpense $(BROADCAST_FLAGS)
+
+direct-settle:
+	forge script script/Interactions.s.sol:SettleDirectExpense $(BROADCAST_FLAGS)
+
+direct-withdraw:
+	forge script script/Interactions.s.sol:WithdrawFromDirectGroup $(BROADCAST_FLAGS)
+
+direct-view:
+	forge script script/Interactions.s.sol:ViewDirectGroupInfo $(FORGE_FLAGS)
 
 #=============================================================================
 # UTILITIES

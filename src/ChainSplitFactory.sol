@@ -2,13 +2,25 @@
 pragma solidity ^0.8.20;
 
 import {GroupEscrow} from "./core/GroupEscrow.sol";
+import {GroupDirect} from "./core/GroupDirect.sol";
 
 /**
  * @title ChainSplitFactory
  * @notice Factory contract for deploying and tracking ChainSplit groups.
  * @dev Entry point for creating new groups. Maintains registry for UI queries.
+ *      Supports both Direct and Escrow settlement modes.
  */
 contract ChainSplitFactory {
+    /*//////////////////////////////////////////////////////////////
+                                 ENUMS
+    //////////////////////////////////////////////////////////////*/
+
+    /// @notice Settlement mode for a group
+    enum GroupMode {
+        Direct, // Pull-based settlement, no deposits
+        Escrow // Pre-funded deposits, balance updates
+    }
+
     /*//////////////////////////////////////////////////////////////
                             STATE VARIABLES
     //////////////////////////////////////////////////////////////*/
@@ -19,9 +31,20 @@ contract ChainSplitFactory {
     /// @notice Mapping from user address to their group addresses
     mapping(address => address[]) public userGroups;
 
+    /// @notice Mapping from group address to its mode
+    mapping(address => GroupMode) public groupModes;
+
     /*//////////////////////////////////////////////////////////////
                                  EVENTS
     //////////////////////////////////////////////////////////////*/
+
+    event DirectGroupCreated(
+        address indexed group,
+        address indexed creator,
+        string name,
+        address token,
+        uint256 memberCount
+    );
 
     event EscrowGroupCreated(
         address indexed group,
@@ -37,15 +60,65 @@ contract ChainSplitFactory {
                                  ERRORS
     //////////////////////////////////////////////////////////////*/
 
-    error EmptyName();
-    error InvalidToken();
-    error InvalidMemberCount();
-    error ZeroDeposit();
-    error InvalidDeadline();
+    error ChainSplitFactory__EmptyName();
+    error ChainSplitFactory__InvalidToken();
+    error ChainSplitFactory__InvalidMemberCount();
+    error ChainSplitFactory__ZeroDeposit();
+    error ChainSplitFactory__InvalidDeadline();
 
     /*//////////////////////////////////////////////////////////////
                           FACTORY FUNCTIONS
     //////////////////////////////////////////////////////////////*/
+
+    /**
+     * @notice Create a new direct-mode group.
+     * @param _name Human-readable group name
+     * @param _token ERC20 token address for settlements
+     * @param _members Array of member addresses
+     * @return group Address of the newly created GroupDirect contract
+     * @dev Direct mode has no deposits - settlements pull via transferFrom.
+     */
+    function createDirectGroup(
+        string calldata _name,
+        address _token,
+        address[] calldata _members
+    ) external returns (address group) {
+        // Input validation
+        if (bytes(_name).length == 0) revert ChainSplitFactory__EmptyName();
+        if (_token == address(0)) revert ChainSplitFactory__InvalidToken();
+        if (_members.length < 2 || _members.length > 20)
+            revert ChainSplitFactory__InvalidMemberCount();
+
+        // Deploy new GroupDirect contract
+        GroupDirect directGroup = new GroupDirect(
+            _name,
+            _token,
+            _members,
+            msg.sender
+        );
+
+        group = address(directGroup);
+
+        // Register group
+        allGroups.push(group);
+        groupModes[group] = GroupMode.Direct;
+
+        // Register group for each member
+        for (uint256 i = 0; i < _members.length; ) {
+            userGroups[_members[i]].push(group);
+            unchecked {
+                ++i;
+            }
+        }
+
+        emit DirectGroupCreated(
+            group,
+            msg.sender,
+            _name,
+            _token,
+            _members.length
+        );
+    }
 
     /**
      * @notice Create a new escrow-mode group.
@@ -67,12 +140,13 @@ contract ChainSplitFactory {
         uint256 _depositDeadline
     ) external returns (address group) {
         // Input validation
-        if (bytes(_name).length == 0) revert EmptyName();
-        if (_token == address(0)) revert InvalidToken();
+        if (bytes(_name).length == 0) revert ChainSplitFactory__EmptyName();
+        if (_token == address(0)) revert ChainSplitFactory__InvalidToken();
         if (_members.length < 2 || _members.length > 20)
-            revert InvalidMemberCount();
-        if (_requiredDeposit == 0) revert ZeroDeposit();
-        if (_depositDeadline <= block.timestamp) revert InvalidDeadline();
+            revert ChainSplitFactory__InvalidMemberCount();
+        if (_requiredDeposit == 0) revert ChainSplitFactory__ZeroDeposit();
+        if (_depositDeadline <= block.timestamp)
+            revert ChainSplitFactory__InvalidDeadline();
 
         // Deploy new GroupEscrow contract
         GroupEscrow escrowGroup = new GroupEscrow(
@@ -88,6 +162,7 @@ contract ChainSplitFactory {
 
         // Register group
         allGroups.push(group);
+        groupModes[group] = GroupMode.Escrow;
 
         // Register group for each member
         for (uint256 i = 0; i < _members.length; ) {
@@ -111,6 +186,15 @@ contract ChainSplitFactory {
     /*//////////////////////////////////////////////////////////////
                           VIEW FUNCTIONS
     //////////////////////////////////////////////////////////////*/
+
+    /**
+     * @notice Get the mode of a group.
+     * @param group The group address
+     * @return The group's settlement mode (Direct or Escrow)
+     */
+    function getGroupMode(address group) external view returns (GroupMode) {
+        return groupModes[group];
+    }
 
     /**
      * @notice Get all groups a user is a member of.
