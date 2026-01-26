@@ -1,0 +1,50 @@
+# Compiler files
+cache/
+out/
+
+# Ignores development broadcast logs
+!/broadcast
+/broadcast/*/31337/
+/broadcast/**/dry-run/
+
+# Docs (auto-generated)
+docs/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Dependencies (installed via forge install)
+# lib/ is gitignored in default foundry template but we track it via submodules
+# If you prefer to not track lib/, uncomment below:
+# lib/
+
+# Node modules (if using npm for additional tooling)
+node_modules/
+
+# Coverage reports
+lcov.info
+coverage/
+
+# Gas snapshots
+.gas-snapshot
+
+# Slither reports
+slither-report.json
+
+# Project-specific ignores
+AGENT_CHARTER.md
+
+# Foundry lock file (optional - some prefer to track this)
+# foundry.lock
