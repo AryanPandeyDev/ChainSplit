@@ -127,7 +127,7 @@ contract HelperConfig is Script {
             NetworkConfig({
                 chainName: "Sepolia Testnet",
                 // Sepolia testnet token addresses (may vary)
-                usdc: 0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238, // Circle's testnet USDC
+                usdc: 0x8267cF9254734C6Eb452a7bb9AAF97B392258b21, // Circle's testnet USDC
                 usdt: address(0), // Not commonly available on Sepolia
                 dai: address(0),
                 weth: 0x7b79995e5f793A07Bc00c21412e50Ecae098E7f9,

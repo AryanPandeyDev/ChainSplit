@@ -14,3 +14,6 @@ node_modules/
 .env.*
 .env.local
 .agent/
+
+# Anvil persisted state (local only, never commit)
+smart_contracts/state/

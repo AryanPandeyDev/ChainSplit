@@ -9,7 +9,7 @@ NETWORK ?= anvil
 
 # RPC URLs (configure in .env or override)
 ANVIL_RPC_URL ?= http://localhost:8545
-SEPOLIA_RPC_URL ?= https://sepolia.infura.io/v3/$(INFURA_KEY)
+SEPOLIA_RPC_URL = https://eth-sepolia.g.alchemy.com/v2/KGc6M-8tIVHE05DMDWBdF
 POLYGON_RPC_URL ?= https://polygon-mainnet.infura.io/v3/$(INFURA_KEY)
 MUMBAI_RPC_URL ?= https://polygon-mumbai.infura.io/v3/$(INFURA_KEY)
 BASE_RPC_URL ?= https://mainnet.base.org
@@ -123,6 +123,14 @@ snapshot:
 
 anvil:
 	anvil
+
+# Start Anvil and dump state to state/state.json on exit (fresh deployment)
+anvil-local:
+	anvil --dump-state state/state.json
+
+# Load persisted Anvil state — no redeploy needed (run this normally)
+load-state:
+	anvil --load-state state/state.json
 
 deploy-local:
 	forge script script/Deploy.s.sol:DeployChainSplitLocal --rpc-url $(ANVIL_RPC_URL) --broadcast

@@ -3,7 +3,9 @@ import { Footer } from "@/components/layout";
 import {
   HeroSection,
   SettlementModesSection,
+  TextStatements,
   HowItWorksSection,
+  ProvenFeatures,
   CTASection,
 } from "@/components/landing";
 import { AnimatedBackground } from "@/components/background";
@@ -25,7 +27,9 @@ export default function HomePage() {
         <main>
           <HeroSection />
           <SettlementModesSection />
+          <TextStatements />
           <HowItWorksSection />
+          <ProvenFeatures />
           <CTASection />
         </main>
 

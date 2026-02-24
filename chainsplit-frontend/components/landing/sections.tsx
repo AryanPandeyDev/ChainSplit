@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, Suspense, lazy } from "react";
+import { useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -13,8 +13,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { FloatingPaths } from "@/components/ui/background-paths";
 import { ArrowRight } from "lucide-react";
+import dynamic from "next/dynamic";
 
-const Spline = lazy(() => import("@splinetool/react-spline"));
+const Spline = dynamic(() => import("@splinetool/react-spline"), {
+    ssr: false,
+    loading: () => <div className="w-full h-full rounded-full bg-gradient-to-br from-purple-500/10 to-blue-500/10 animate-pulse" />,
+});
 
 /* ═══════════════════════════════════════════════════════
    ANIMATION CONFIGS
@@ -96,13 +100,7 @@ function AnimatedWords({ text, className }: { text: string; className?: string }
 function HeroVisual() {
     return (
         <div className="relative w-full aspect-square max-w-2xl mx-auto">
-            <Suspense
-                fallback={
-                    <div className="w-full h-full rounded-full bg-gradient-to-br from-purple-500/10 to-blue-500/10 animate-pulse" />
-                }
-            >
-                <Spline scene="https://prod.spline.design/uSCYxUvR71qA86-h/scene.splinecode" />
-            </Suspense>
+            <Spline scene="https://prod.spline.design/uSCYxUvR71qA86-h/scene.splinecode" />
         </div>
     );
 }
@@ -296,7 +294,7 @@ export function SettlementModesSection() {
    Like the reference's "Censorship-free / Algorithm-free"
    ══════════════════════════════════════════════════════ */
 
-function TextStatements() {
+export function TextStatements() {
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true, margin: "-15%" });
 
@@ -358,47 +356,42 @@ export function HowItWorksSection() {
     ];
 
     return (
-        <>
-            {/* Big text statements section first */}
-            <TextStatements />
+        <section id="how-it-works" className="py-24 lg:py-32 relative">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[60%] h-px bg-gradient-to-r from-transparent via-[var(--ld-border)] to-transparent" />
 
-            <section id="how-it-works" className="py-24 lg:py-32 relative">
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[60%] h-px bg-gradient-to-r from-transparent via-[var(--ld-border)] to-transparent" />
-
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="mb-20 max-w-3xl">
-                        <h2 className="text-[clamp(2.5rem,5vw,4rem)] leading-[1.1] tracking-tight font-[family-name:var(--font-serif)]">
-                            <AnimatedWords text="How it" />
-                            <br />
-                            <span className="italic text-[var(--ld-text-muted)]">
-                                <AnimatedWords text="works." />
-                            </span>
-                        </h2>
-                    </div>
-
-                    <div ref={ref} className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        {steps.map((step, i) => (
-                            <motion.div
-                                key={step.number}
-                                custom={i}
-                                variants={slideUp}
-                                initial="hidden"
-                                animate={isInView ? "visible" : "hidden"}
-                                className="relative p-8 rounded-2xl border border-[var(--ld-border)] bg-[var(--ld-surface)] group hover:border-[var(--ld-border-hover)] transition-colors"
-                            >
-                                <span className="block text-6xl font-[family-name:var(--font-serif)] text-[rgba(255,255,255,0.06)] mb-4 select-none">
-                                    {step.number}
-                                </span>
-                                <h3 className="text-xl font-bold mb-3">{step.title}</h3>
-                                <p className="text-[var(--ld-text-muted)] leading-relaxed">
-                                    {step.description}
-                                </p>
-                            </motion.div>
-                        ))}
-                    </div>
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div className="mb-20 max-w-3xl">
+                    <h2 className="text-[clamp(2.5rem,5vw,4rem)] leading-[1.1] tracking-tight font-[family-name:var(--font-serif)]">
+                        <AnimatedWords text="How it" />
+                        <br />
+                        <span className="italic text-[var(--ld-text-muted)]">
+                            <AnimatedWords text="works." />
+                        </span>
+                    </h2>
                 </div>
-            </section>
-        </>
+
+                <div ref={ref} className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {steps.map((step, i) => (
+                        <motion.div
+                            key={step.number}
+                            custom={i}
+                            variants={slideUp}
+                            initial="hidden"
+                            animate={isInView ? "visible" : "hidden"}
+                            className="relative p-8 rounded-2xl border border-[var(--ld-border)] bg-[var(--ld-surface)] group hover:border-[var(--ld-border-hover)] transition-colors"
+                        >
+                            <span className="block text-6xl font-[family-name:var(--font-serif)] text-[rgba(255,255,255,0.06)] mb-4 select-none">
+                                {step.number}
+                            </span>
+                            <h3 className="text-xl font-bold mb-3">{step.title}</h3>
+                            <p className="text-[var(--ld-text-muted)] leading-relaxed">
+                                {step.description}
+                            </p>
+                        </motion.div>
+                    ))}
+                </div>
+            </div>
+        </section>
     );
 }
 
@@ -406,7 +399,7 @@ export function HowItWorksSection() {
    SECTION 5: PROVEN FEATURES — showcase cards with visuals
    ══════════════════════════════════════════════════════ */
 
-function ProvenFeatures() {
+export function ProvenFeatures() {
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true, margin: "-15%" });
 
@@ -517,50 +510,46 @@ export function CTASection() {
     const yButton = useTransform(scrollYProgress, [0, 1], [60, -10]);
 
     return (
-        <>
-            <ProvenFeatures />
+        <section ref={ref} className="py-24 lg:py-40 relative overflow-hidden">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[60%] h-px bg-gradient-to-r from-transparent via-[var(--ld-border)] to-transparent" />
 
-            <section ref={ref} className="py-24 lg:py-40 relative overflow-hidden">
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[60%] h-px bg-gradient-to-r from-transparent via-[var(--ld-border)] to-transparent" />
+            {/* Background glow */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="w-[800px] h-[400px] rounded-full opacity-[0.06] blur-[120px]"
+                    style={{ background: "linear-gradient(135deg, rgba(140,100,255,0.8), rgba(80,200,200,0.5))" }}
+                />
+            </div>
 
-                {/* Background glow */}
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <div className="w-[800px] h-[400px] rounded-full opacity-[0.06] blur-[120px]"
-                        style={{ background: "linear-gradient(135deg, rgba(140,100,255,0.8), rgba(80,200,200,0.5))" }}
-                    />
-                </div>
+            <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center relative z-10">
+                <motion.h2
+                    style={{ y: yHeading }}
+                    className="text-[clamp(2.5rem,6vw,5rem)] leading-[1.1] tracking-tight mb-6 font-[family-name:var(--font-serif)]"
+                >
+                    Start splitting
+                    <br />
+                    <span className="italic text-[var(--ld-text-muted)]">smarter.</span>
+                </motion.h2>
 
-                <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center relative z-10">
-                    <motion.h2
-                        style={{ y: yHeading }}
-                        className="text-[clamp(2.5rem,6vw,5rem)] leading-[1.1] tracking-tight mb-6 font-[family-name:var(--font-serif)]"
-                    >
-                        Start splitting
-                        <br />
-                        <span className="italic text-[var(--ld-text-muted)]">smarter.</span>
-                    </motion.h2>
+                <motion.p
+                    style={{ y: ySubtext }}
+                    className="text-lg lg:text-xl text-[var(--ld-text-muted)] max-w-lg mx-auto mb-10 leading-relaxed"
+                >
+                    Join the future of transparent group settlements.
+                    Connect your wallet and create your first group in minutes.
+                </motion.p>
 
-                    <motion.p
-                        style={{ y: ySubtext }}
-                        className="text-lg lg:text-xl text-[var(--ld-text-muted)] max-w-lg mx-auto mb-10 leading-relaxed"
-                    >
-                        Join the future of transparent group settlements.
-                        Connect your wallet and create your first group in minutes.
-                    </motion.p>
-
-                    <motion.div style={{ y: yButton }}>
-                        <Link href="/dashboard">
-                            <Button
-                                size="lg"
-                                className="rounded-full px-10 py-7 text-lg font-semibold bg-white text-[#050505] hover:bg-gray-200 transition-all hover:scale-[1.03] active:scale-[0.98]"
-                            >
-                                Launch App
-                                <ArrowRight className="ml-2 h-5 w-5" />
-                            </Button>
-                        </Link>
-                    </motion.div>
-                </div>
-            </section>
-        </>
+                <motion.div style={{ y: yButton }}>
+                    <Link href="/dashboard">
+                        <Button
+                            size="lg"
+                            className="rounded-full px-10 py-7 text-lg font-semibold bg-white text-[#050505] hover:bg-gray-200 transition-all hover:scale-[1.03] active:scale-[0.98]"
+                        >
+                            Launch App
+                            <ArrowRight className="ml-2 h-5 w-5" />
+                        </Button>
+                    </Link>
+                </motion.div>
+            </div>
+        </section>
     );
 }
