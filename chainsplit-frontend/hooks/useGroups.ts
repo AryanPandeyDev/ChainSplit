@@ -151,21 +151,22 @@ export function useCreateGroup() {
     const escrow = useCreateEscrowGroup();
 
     const createDirectGroup = async (params: {
+        name: string;
         members: Address[];
         tokenAddress: Address;
     }) => {
-        // Using a placeholder name since the contract requires it
-        direct.createGroup("Group", params.tokenAddress, params.members);
+        direct.createGroup(params.name, params.tokenAddress, params.members);
     };
 
     const createEscrowGroup = async (params: {
+        name: string;
         members: Address[];
         tokenAddress: Address;
         requiredDeposit: bigint;
         depositDeadline: bigint;
     }) => {
         escrow.createGroup(
-            "Group",
+            params.name,
             params.tokenAddress,
             params.members,
             params.requiredDeposit,

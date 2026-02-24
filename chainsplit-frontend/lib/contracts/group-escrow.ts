@@ -1,15 +1,20 @@
 /**
  * GroupEscrow Contract ABI
  * Pre-funded mode — members deposit upfront, expenses debit/credit internal balances
+ *
+ * Source of truth: smart_contracts/src/core/GroupEscrow.sol
  */
 
 /**
  * Group state in Escrow mode
+ * Must match GroupEscrow.GroupState enum exactly
  */
 export enum GroupState {
-    Pending = 0,  // Waiting for all deposits
-    Active = 1,   // All deposited, can create expenses
-    Closed = 2,   // Unanimously closed, can withdraw
+    Pending = 0,      // Awaiting deposits
+    Active = 1,       // All deposited, can create expenses
+    ClosePending = 2, // Close proposed, collecting votes
+    Closed = 3,       // Unanimous vote, withdrawals enabled
+    Cancelled = 4,    // Deadline passed or manually cancelled, refunds enabled
 }
 
 /**
@@ -22,10 +27,12 @@ export enum EscrowExpenseState {
 }
 
 /**
- * GroupEscrow ABI - subset of functions used by frontend
+ * GroupEscrow ABI — matches GroupEscrow.sol exactly
  */
 export const groupEscrowAbi = [
+    // ========================================================================
     // Deposit Phase
+    // ========================================================================
     {
         type: "function",
         name: "deposit",
@@ -33,7 +40,31 @@ export const groupEscrowAbi = [
         outputs: [],
         stateMutability: "nonpayable",
     },
+    {
+        type: "function",
+        name: "cancelGroup",
+        inputs: [],
+        outputs: [],
+        stateMutability: "nonpayable",
+    },
+    {
+        type: "function",
+        name: "checkDeadline",
+        inputs: [],
+        outputs: [],
+        stateMutability: "nonpayable",
+    },
+    {
+        type: "function",
+        name: "refundDeposit",
+        inputs: [],
+        outputs: [],
+        stateMutability: "nonpayable",
+    },
+
+    // ========================================================================
     // Expense Flow
+    // ========================================================================
     {
         type: "function",
         name: "createExpense",
@@ -53,7 +84,17 @@ export const groupEscrowAbi = [
         outputs: [],
         stateMutability: "nonpayable",
     },
+    {
+        type: "function",
+        name: "cancelExpense",
+        inputs: [{ name: "expenseId", type: "uint256" }],
+        outputs: [],
+        stateMutability: "nonpayable",
+    },
+
+    // ========================================================================
     // Close Flow
+    // ========================================================================
     {
         type: "function",
         name: "proposeClose",
@@ -68,14 +109,10 @@ export const groupEscrowAbi = [
         outputs: [],
         stateMutability: "nonpayable",
     },
-    {
-        type: "function",
-        name: "cancelClose",
-        inputs: [],
-        outputs: [],
-        stateMutability: "nonpayable",
-    },
+
+    // ========================================================================
     // Withdrawal
+    // ========================================================================
     {
         type: "function",
         name: "withdraw",
@@ -83,7 +120,24 @@ export const groupEscrowAbi = [
         outputs: [],
         stateMutability: "nonpayable",
     },
+
+    // ========================================================================
     // View Functions
+    // ========================================================================
+    {
+        type: "function",
+        name: "name",
+        inputs: [],
+        outputs: [{ name: "", type: "string" }],
+        stateMutability: "view",
+    },
+    {
+        type: "function",
+        name: "state",
+        inputs: [],
+        outputs: [{ name: "", type: "uint8" }],
+        stateMutability: "view",
+    },
     {
         type: "function",
         name: "balances",
@@ -100,16 +154,54 @@ export const groupEscrowAbi = [
     },
     {
         type: "function",
-        name: "hasVotedClose",
+        name: "closeVotes",
         inputs: [{ name: "", type: "address" }],
         outputs: [{ name: "", type: "bool" }],
         stateMutability: "view",
     },
     {
         type: "function",
-        name: "state",
+        name: "hasAccepted",
+        inputs: [
+            { name: "expenseId", type: "uint256" },
+            { name: "member", type: "address" },
+        ],
+        outputs: [{ name: "", type: "bool" }],
+        stateMutability: "view",
+    },
+    {
+        type: "function",
+        name: "isMember",
+        inputs: [{ name: "", type: "address" }],
+        outputs: [{ name: "", type: "bool" }],
+        stateMutability: "view",
+    },
+    {
+        type: "function",
+        name: "members",
+        inputs: [{ name: "", type: "uint256" }],
+        outputs: [{ name: "", type: "address" }],
+        stateMutability: "view",
+    },
+    {
+        type: "function",
+        name: "depositCount",
         inputs: [],
-        outputs: [{ name: "", type: "uint8" }],
+        outputs: [{ name: "", type: "uint256" }],
+        stateMutability: "view",
+    },
+    {
+        type: "function",
+        name: "expenseCount",
+        inputs: [],
+        outputs: [{ name: "", type: "uint256" }],
+        stateMutability: "view",
+    },
+    {
+        type: "function",
+        name: "closeProposed",
+        inputs: [],
+        outputs: [{ name: "", type: "bool" }],
         stateMutability: "view",
     },
     {
@@ -128,13 +220,21 @@ export const groupEscrowAbi = [
     },
     {
         type: "function",
+        name: "TOKEN",
+        inputs: [],
+        outputs: [{ name: "", type: "address" }],
+        stateMutability: "view",
+    },
+    {
+        type: "function",
         name: "getGroupInfo",
         inputs: [],
         outputs: [
-            { name: "name", type: "string" },
-            { name: "token", type: "address" },
-            { name: "memberCount", type: "uint256" },
-            { name: "expenseCount", type: "uint256" },
+            { name: "_name", type: "string" },
+            { name: "_token", type: "address" },
+            { name: "_state", type: "uint8" },
+            { name: "_memberCount", type: "uint256" },
+            { name: "_depositCount", type: "uint256" },
         ],
         stateMutability: "view",
     },
@@ -156,50 +256,25 @@ export const groupEscrowAbi = [
         name: "getExpenseParticipants",
         inputs: [{ name: "expenseId", type: "uint256" }],
         outputs: [
-            { name: "", type: "address[]" },
+            { name: "participants", type: "address[]" },
             { name: "shares", type: "uint256[]" },
         ],
         stateMutability: "view",
     },
     {
         type: "function",
-        name: "members",
-        inputs: [{ name: "", type: "uint256" }],
-        outputs: [{ name: "", type: "address" }],
-        stateMutability: "view",
-    },
-    {
-        type: "function",
-        name: "isMember",
-        inputs: [{ name: "", type: "address" }],
-        outputs: [{ name: "", type: "bool" }],
-        stateMutability: "view",
-    },
-    {
-        type: "function",
-        name: "TOKEN",
+        name: "getMembers",
         inputs: [],
-        outputs: [{ name: "", type: "address" }],
+        outputs: [{ name: "", type: "address[]" }],
         stateMutability: "view",
     },
-    {
-        type: "function",
-        name: "NAME",
-        inputs: [],
-        outputs: [{ name: "", type: "string" }],
-        stateMutability: "view",
-    },
-    {
-        type: "function",
-        name: "closeVoteCount",
-        inputs: [],
-        outputs: [{ name: "", type: "uint256" }],
-        stateMutability: "view",
-    },
-    // Events
+
+    // ========================================================================
+    // Events (must match GroupEscrow.sol exactly)
+    // ========================================================================
     {
         type: "event",
-        name: "Deposited",
+        name: "DepositReceived",
         inputs: [
             { name: "member", type: "address", indexed: true },
             { name: "amount", type: "uint256", indexed: false },
@@ -212,12 +287,17 @@ export const groupEscrowAbi = [
     },
     {
         type: "event",
+        name: "GroupCancelled",
+        inputs: [],
+    },
+    {
+        type: "event",
         name: "ExpenseCreated",
         inputs: [
             { name: "expenseId", type: "uint256", indexed: true },
             { name: "payer", type: "address", indexed: true },
             { name: "amount", type: "uint256", indexed: false },
-            { name: "participantCount", type: "uint256", indexed: false },
+            { name: "ipfsCid", type: "string", indexed: false },
         ],
     },
     {
@@ -233,8 +313,13 @@ export const groupEscrowAbi = [
         name: "ExpenseSettled",
         inputs: [
             { name: "expenseId", type: "uint256", indexed: true },
-            { name: "payer", type: "address", indexed: true },
-            { name: "amount", type: "uint256", indexed: false },
+        ],
+    },
+    {
+        type: "event",
+        name: "ExpenseCancelled",
+        inputs: [
+            { name: "expenseId", type: "uint256", indexed: true },
         ],
     },
     {
@@ -247,13 +332,7 @@ export const groupEscrowAbi = [
         name: "CloseVoted",
         inputs: [
             { name: "voter", type: "address", indexed: true },
-            { name: "voteCount", type: "uint256", indexed: false },
         ],
-    },
-    {
-        type: "event",
-        name: "CloseCancelled",
-        inputs: [],
     },
     {
         type: "event",
@@ -262,7 +341,15 @@ export const groupEscrowAbi = [
     },
     {
         type: "event",
-        name: "Withdrawal",
+        name: "Withdrawn",
+        inputs: [
+            { name: "member", type: "address", indexed: true },
+            { name: "amount", type: "uint256", indexed: false },
+        ],
+    },
+    {
+        type: "event",
+        name: "DepositRefunded",
         inputs: [
             { name: "member", type: "address", indexed: true },
             { name: "amount", type: "uint256", indexed: false },

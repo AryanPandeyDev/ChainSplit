@@ -10,11 +10,11 @@ import { AnimatedBackground } from "@/components/background";
 
 /**
  * Landing Page
- * Public-facing marketing page for ChainSplit
+ * Dark Web3 theme — scoped via .landing-dark class
  */
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-[var(--cs-bg-offwhite)] relative">
+    <div className="landing-dark min-h-screen relative">
       {/* Animated background elements */}
       <AnimatedBackground />
 

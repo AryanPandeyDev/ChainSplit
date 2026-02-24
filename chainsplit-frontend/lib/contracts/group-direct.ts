@@ -1,6 +1,8 @@
 /**
  * GroupDirect Contract ABI
  * Pull-based settlement mode — no deposits, payer pulls funds via transferFrom
+ *
+ * Source of truth: smart_contracts/src/core/GroupDirect.sol
  */
 
 /**
@@ -13,10 +15,12 @@ export enum ExpenseState {
 }
 
 /**
- * GroupDirect ABI - subset of functions used by frontend
+ * GroupDirect ABI — matches GroupDirect.sol exactly
  */
 export const groupDirectAbi = [
+    // ========================================================================
     // Expense Flow
+    // ========================================================================
     {
         type: "function",
         name: "createExpense",
@@ -50,7 +54,10 @@ export const groupDirectAbi = [
         outputs: [],
         stateMutability: "nonpayable",
     },
+
+    // ========================================================================
     // Withdrawal
+    // ========================================================================
     {
         type: "function",
         name: "withdraw",
@@ -58,7 +65,17 @@ export const groupDirectAbi = [
         outputs: [],
         stateMutability: "nonpayable",
     },
+
+    // ========================================================================
     // View Functions
+    // ========================================================================
+    {
+        type: "function",
+        name: "name",
+        inputs: [],
+        outputs: [{ name: "", type: "string" }],
+        stateMutability: "view",
+    },
     {
         type: "function",
         name: "balances",
@@ -75,13 +92,20 @@ export const groupDirectAbi = [
     },
     {
         type: "function",
+        name: "expenseCount",
+        inputs: [],
+        outputs: [{ name: "", type: "uint256" }],
+        stateMutability: "view",
+    },
+    {
+        type: "function",
         name: "getGroupInfo",
         inputs: [],
         outputs: [
-            { name: "name", type: "string" },
-            { name: "token", type: "address" },
-            { name: "memberCount", type: "uint256" },
-            { name: "expenseCount", type: "uint256" },
+            { name: "_name", type: "string" },
+            { name: "_token", type: "address" },
+            { name: "_memberCount", type: "uint256" },
+            { name: "_expenseCount", type: "uint256" },
         ],
         stateMutability: "view",
     },
@@ -103,7 +127,7 @@ export const groupDirectAbi = [
         name: "getExpenseParticipants",
         inputs: [{ name: "expenseId", type: "uint256" }],
         outputs: [
-            { name: "", type: "address[]" },
+            { name: "participants", type: "address[]" },
             { name: "shares", type: "uint256[]" },
         ],
         stateMutability: "view",
@@ -124,6 +148,16 @@ export const groupDirectAbi = [
     },
     {
         type: "function",
+        name: "hasAccepted",
+        inputs: [
+            { name: "expenseId", type: "uint256" },
+            { name: "member", type: "address" },
+        ],
+        outputs: [{ name: "", type: "bool" }],
+        stateMutability: "view",
+    },
+    {
+        type: "function",
         name: "TOKEN",
         inputs: [],
         outputs: [{ name: "", type: "address" }],
@@ -131,12 +165,29 @@ export const groupDirectAbi = [
     },
     {
         type: "function",
-        name: "NAME",
+        name: "getMembers",
         inputs: [],
-        outputs: [{ name: "", type: "string" }],
+        outputs: [{ name: "", type: "address[]" }],
         stateMutability: "view",
     },
-    // Events
+    {
+        type: "function",
+        name: "getBalance",
+        inputs: [{ name: "member", type: "address" }],
+        outputs: [{ name: "", type: "int256" }],
+        stateMutability: "view",
+    },
+    {
+        type: "function",
+        name: "getWithdrawableBalance",
+        inputs: [{ name: "member", type: "address" }],
+        outputs: [{ name: "", type: "uint256" }],
+        stateMutability: "view",
+    },
+
+    // ========================================================================
+    // Events (must match GroupDirect.sol exactly)
+    // ========================================================================
     {
         type: "event",
         name: "ExpenseCreated",
@@ -144,7 +195,7 @@ export const groupDirectAbi = [
             { name: "expenseId", type: "uint256", indexed: true },
             { name: "payer", type: "address", indexed: true },
             { name: "amount", type: "uint256", indexed: false },
-            { name: "participantCount", type: "uint256", indexed: false },
+            { name: "ipfsCid", type: "string", indexed: false },
         ],
     },
     {
@@ -160,8 +211,6 @@ export const groupDirectAbi = [
         name: "ExpenseSettled",
         inputs: [
             { name: "expenseId", type: "uint256", indexed: true },
-            { name: "payer", type: "address", indexed: true },
-            { name: "amount", type: "uint256", indexed: false },
         ],
     },
     {
@@ -171,7 +220,16 @@ export const groupDirectAbi = [
     },
     {
         type: "event",
-        name: "Withdrawal",
+        name: "BalanceUpdated",
+        inputs: [
+            { name: "member", type: "address", indexed: true },
+            { name: "oldBalance", type: "int256", indexed: false },
+            { name: "newBalance", type: "int256", indexed: false },
+        ],
+    },
+    {
+        type: "event",
+        name: "Withdrawn",
         inputs: [
             { name: "member", type: "address", indexed: true },
             { name: "amount", type: "uint256", indexed: false },

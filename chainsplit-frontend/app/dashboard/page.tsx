@@ -1,11 +1,12 @@
 "use client";
 
-import { useWallet, useUserGroups, useGroupMode } from "@/hooks";
+import { useWallet, useUserGroups } from "@/hooks";
+import { useGroupDetails } from "@/hooks/useGroupDetails";
 import { Navbar } from "@/components/layout";
 import { Button } from "@/components/ui/button";
 import { Plus, Wallet, Loader2, RefreshCw } from "lucide-react";
 import { motion } from "framer-motion";
-import { GroupCardList } from "@/components/cards/group-card";
+import { GroupCard } from "@/components/cards/group-card";
 import { CreateGroupModal } from "@/components/modals/create-group-modal";
 import { useState, useEffect } from "react";
 import type { Address } from "viem";
@@ -87,6 +88,72 @@ function NotConnectedState() {
 }
 
 /**
+ * Single group card that reads its own data from the contract.
+ * Each card is its own component so it can call hooks individually.
+ */
+function ConnectedGroupCard({
+    groupAddress,
+    userAddress,
+}: {
+    groupAddress: Address;
+    userAddress: Address;
+}) {
+    const { details, isLoading } = useGroupDetails(groupAddress, userAddress);
+
+    if (isLoading || !details) {
+        return (
+            <div className="bg-white border border-[var(--cs-border-light)] rounded-2xl p-5 sm:p-6 animate-pulse">
+                <div className="h-5 bg-[var(--cs-bg-gray)] rounded w-1/3 mb-3" />
+                <div className="h-4 bg-[var(--cs-bg-gray)] rounded w-1/2" />
+            </div>
+        );
+    }
+
+    return <GroupCard {...details} />;
+}
+
+/**
+ * Animated list of connected group cards
+ */
+function ConnectedGroupCardList({
+    groupAddresses,
+    userAddress,
+}: {
+    groupAddresses: Address[];
+    userAddress: Address;
+}) {
+    return (
+        <motion.div
+            initial="hidden"
+            animate="show"
+            variants={{
+                hidden: { opacity: 0 },
+                show: {
+                    opacity: 1,
+                    transition: { staggerChildren: 0.1 },
+                },
+            }}
+            className="space-y-4"
+        >
+            {groupAddresses.map((addr) => (
+                <motion.div
+                    key={addr}
+                    variants={{
+                        hidden: { opacity: 0, y: 20 },
+                        show: { opacity: 1, y: 0 },
+                    }}
+                >
+                    <ConnectedGroupCard
+                        groupAddress={addr}
+                        userAddress={userAddress}
+                    />
+                </motion.div>
+            ))}
+        </motion.div>
+    );
+}
+
+/**
  * Dashboard Page
  * Shows user's groups and allows creating new ones
  */
@@ -104,17 +171,7 @@ export default function DashboardPage() {
         }
     }, [isConnected, address, refetch]);
 
-    // Transform group addresses to card data
-    // Note: In production, we'd batch-read group info from each contract
-    const groups = (groupAddresses || []).map((addr) => ({
-        address: addr as string,
-        name: `Group ${(addr as string).slice(0, 6)}...`, // Placeholder - would read from contract
-        mode: "direct" as const, // Placeholder - would read from contract
-        memberCount: 0, // Placeholder
-        expenseCount: 0, // Placeholder
-        balance: 0, // Placeholder
-        tokenSymbol: "USDC", // Placeholder
-    }));
+    const groups = (groupAddresses ?? []) as Address[];
 
     return (
         <div className="min-h-screen bg-[var(--cs-bg-offwhite)]">
@@ -173,7 +230,10 @@ export default function DashboardPage() {
                         {groups.length === 0 ? (
                             <EmptyState onCreateGroup={() => setCreateModalOpen(true)} />
                         ) : (
-                            <GroupCardList groups={groups} />
+                            <ConnectedGroupCardList
+                                groupAddresses={groups}
+                                userAddress={address!}
+                            />
                         )}
                     </>
                 )}

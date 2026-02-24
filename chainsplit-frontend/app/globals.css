@@ -161,3 +161,60 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* ═══════════════════════════════════════════════════════
+   Landing Page — Dark Web3 Theme (scoped)
+   ══════════════════════════════════════════════════════ */
+
+.landing-dark {
+  --ld-bg: #050505;
+  --ld-surface: rgba(255, 255, 255, 0.04);
+  --ld-surface-hover: rgba(255, 255, 255, 0.07);
+  --ld-border: rgba(255, 255, 255, 0.08);
+  --ld-border-hover: rgba(255, 255, 255, 0.14);
+  --ld-text: #F5F5F7;
+  --ld-text-muted: #86868B;
+  --ld-accent: #A8FF00;
+  --ld-accent-hover: #8CD600;
+
+  /* Glassmorphism */
+  --ld-glass-bg: rgba(22, 22, 23, 0.72);
+  --ld-glass-border: rgba(255, 255, 255, 0.08);
+
+  background: var(--ld-bg);
+  color: var(--ld-text);
+}
+
+/* Model slot placeholder — ready for React Three Fiber <Canvas> */
+.landing-dark .model-slot {
+  position: relative;
+  border-radius: 24px;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(168, 255, 0, 0.06) 0%,
+    rgba(168, 255, 0, 0) 70%
+  );
+  border: 1px solid var(--ld-border);
+  overflow: hidden;
+  animation: pulse-glow 4s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(168, 255, 0, 0.05),
+                0 0 60px rgba(168, 255, 0, 0.02);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(168, 255, 0, 0.1),
+                0 0 80px rgba(168, 255, 0, 0.04);
+  }
+}
+
+/* Glass navbar in landing context */
+.landing-dark .glass-nav {
+  background: var(--ld-glass-bg);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid var(--ld-glass-border);
+}
+

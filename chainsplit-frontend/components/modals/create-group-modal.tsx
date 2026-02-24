@@ -113,6 +113,7 @@ export function CreateGroupModal({ open, onOpenChange, onGroupCreated }: CreateG
 
             if (mode === "direct") {
                 await createDirectGroup({
+                    name: name.trim(),
                     members: allMembers as `0x${string}`[],
                     tokenAddress: tokenAddress as `0x${string}`,
                 });
@@ -122,6 +123,7 @@ export function CreateGroupModal({ open, onOpenChange, onGroupCreated }: CreateG
                 const deadline = BigInt(Math.floor(Date.now() / 1000) + deadlineDays * 24 * 60 * 60);
 
                 await createEscrowGroup({
+                    name: name.trim(),
                     members: allMembers as `0x${string}`[],
                     tokenAddress: tokenAddress as `0x${string}`,
                     requiredDeposit: depositAmount,

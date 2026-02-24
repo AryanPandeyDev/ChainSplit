@@ -404,6 +404,209 @@ export function useVoteClose(groupAddress: Address | undefined) {
     };
 }
 
+/**
+ * Hook for cancelling a group (Escrow mode, Pending state only)
+ */
+export function useCancelGroup(groupAddress: Address | undefined) {
+    const { writeContract, data: hash, isPending, error } = useWriteContract();
+
+    const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
+        hash,
+    });
+
+    const cancelGroup = () => {
+        if (!groupAddress) {
+            throw new Error("Group address not provided");
+        }
+
+        writeContract({
+            address: groupAddress,
+            abi: groupEscrowAbi,
+            functionName: "cancelGroup",
+        });
+    };
+
+    return {
+        cancelGroup,
+        hash,
+        isPending,
+        isConfirming,
+        isSuccess,
+        error,
+    };
+}
+
+/**
+ * Hook for refunding deposit after cancellation (Escrow mode)
+ */
+export function useRefundDeposit(groupAddress: Address | undefined) {
+    const { writeContract, data: hash, isPending, error } = useWriteContract();
+
+    const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
+        hash,
+    });
+
+    const refundDeposit = () => {
+        if (!groupAddress) {
+            throw new Error("Group address not provided");
+        }
+
+        writeContract({
+            address: groupAddress,
+            abi: groupEscrowAbi,
+            functionName: "refundDeposit",
+        });
+    };
+
+    return {
+        refundDeposit,
+        hash,
+        isPending,
+        isConfirming,
+        isSuccess,
+        error,
+    };
+}
+
+/**
+ * Hook for checking deadline and auto-cancelling (Escrow mode)
+ */
+export function useCheckDeadline(groupAddress: Address | undefined) {
+    const { writeContract, data: hash, isPending, error } = useWriteContract();
+
+    const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
+        hash,
+    });
+
+    const checkDeadline = () => {
+        if (!groupAddress) {
+            throw new Error("Group address not provided");
+        }
+
+        writeContract({
+            address: groupAddress,
+            abi: groupEscrowAbi,
+            functionName: "checkDeadline",
+        });
+    };
+
+    return {
+        checkDeadline,
+        hash,
+        isPending,
+        isConfirming,
+        isSuccess,
+        error,
+    };
+}
+
+/**
+ * Hook for cancelling an expense (Escrow mode)
+ */
+export function useCancelExpenseEscrow(groupAddress: Address | undefined) {
+    const { writeContract, data: hash, isPending, error } = useWriteContract();
+
+    const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
+        hash,
+    });
+
+    const cancelExpense = (expenseId: bigint) => {
+        if (!groupAddress) {
+            throw new Error("Group address not provided");
+        }
+
+        writeContract({
+            address: groupAddress,
+            abi: groupEscrowAbi,
+            functionName: "cancelExpense",
+            args: [expenseId],
+        });
+    };
+
+    return {
+        cancelExpense,
+        hash,
+        isPending,
+        isConfirming,
+        isSuccess,
+        error,
+    };
+}
+
+/**
+ * Hook for reading required deposit amount (Escrow mode)
+ */
+export function useRequiredDeposit(groupAddress: Address | undefined) {
+    return useReadContract({
+        address: groupAddress,
+        abi: groupEscrowAbi,
+        functionName: "REQUIRED_DEPOSIT",
+        query: {
+            enabled: !!groupAddress,
+        },
+    });
+}
+
+/**
+ * Hook for reading deposit deadline (Escrow mode)
+ */
+export function useDepositDeadline(groupAddress: Address | undefined) {
+    return useReadContract({
+        address: groupAddress,
+        abi: groupEscrowAbi,
+        functionName: "DEPOSIT_DEADLINE",
+        query: {
+            enabled: !!groupAddress,
+        },
+    });
+}
+
+/**
+ * Hook for reading a member's close vote status (Escrow mode)
+ */
+export function useCloseVote(
+    groupAddress: Address | undefined,
+    memberAddress: Address | undefined
+) {
+    return useReadContract({
+        address: groupAddress,
+        abi: groupEscrowAbi,
+        functionName: "closeVotes",
+        args: memberAddress ? [memberAddress] : undefined,
+        query: {
+            enabled: !!groupAddress && !!memberAddress,
+        },
+    });
+}
+
+/**
+ * Hook for reading whether close has been proposed (Escrow mode)
+ */
+export function useCloseProposed(groupAddress: Address | undefined) {
+    return useReadContract({
+        address: groupAddress,
+        abi: groupEscrowAbi,
+        functionName: "closeProposed",
+        query: {
+            enabled: !!groupAddress,
+        },
+    });
+}
+
+/**
+ * Hook for reading escrow expense count
+ */
+export function useEscrowExpenseCount(groupAddress: Address | undefined) {
+    return useReadContract({
+        address: groupAddress,
+        abi: groupEscrowAbi,
+        functionName: "expenseCount",
+        query: {
+            enabled: !!groupAddress,
+        },
+    });
+}
+
 // ============================================================================
 // ERC20 TOKEN HOOKS
 // ============================================================================

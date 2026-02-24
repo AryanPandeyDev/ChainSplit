@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -20,6 +20,18 @@ import {
     AlertCircle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { parseUnits } from "viem";
+import type { Address } from "viem";
+import {
+    useWallet,
+    useGroupMode,
+    useGroupInfo,
+    useGroupMembers,
+    useCreateExpense,
+    useTokenInfo,
+} from "@/hooks";
+
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
 
 // Form validation schema
 const addExpenseSchema = z.object({
@@ -221,21 +233,15 @@ function ExpensePreview({
             <div className="space-y-2">
                 <div className="flex justify-between">
                     <span>Total</span>
-                    <span className="font-semibold">${amount.toFixed(2)} {tokenSymbol}</span>
+                    <span className="font-semibold">{amount.toFixed(2)} {tokenSymbol}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                    <span className="text-[var(--cs-text-secondary)]">You pay</span>
-                    <span>${userShare.toFixed(2)}</span>
+                    <span className="text-[var(--cs-text-secondary)]">Your share</span>
+                    <span>{userShare.toFixed(2)} {tokenSymbol}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                     <span className="text-[var(--cs-text-secondary)]">Others owe you</span>
-                    <span className="text-[var(--cs-accent-green)]">${othersOwe.toFixed(2)}</span>
-                </div>
-                <div className="border-t border-[var(--cs-border-light)] pt-2 mt-2">
-                    <div className="flex justify-between text-xs">
-                        <span className="text-[var(--cs-text-secondary)]">Est. gas</span>
-                        <span>~0.002 ETH</span>
-                    </div>
+                    <span className="text-[var(--cs-accent-green)]">{othersOwe.toFixed(2)} {tokenSymbol}</span>
                 </div>
             </div>
         </div>
@@ -243,31 +249,107 @@ function ExpensePreview({
 }
 
 /**
+ * Upload receipt image to IPFS via backend
+ */
+async function uploadReceiptToIPFS(file: File): Promise<string | null> {
+    try {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const res = await fetch(`${BACKEND_URL}/api/pin/file`, {
+            method: "POST",
+            body: formData,
+        });
+
+        if (!res.ok) return null;
+        const json = await res.json();
+        return json.data?.cid ?? null;
+    } catch {
+        console.error("Failed to upload receipt to IPFS");
+        return null;
+    }
+}
+
+/**
+ * Upload expense metadata JSON to IPFS via backend
+ */
+async function uploadExpenseMetadata(metadata: {
+    description: string;
+    amount: string;
+    receiptCid?: string;
+}): Promise<string> {
+    const res = await fetch(`${BACKEND_URL}/api/pin/json`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            data: metadata,
+            name: `expense-${Date.now()}`,
+        }),
+    });
+
+    if (!res.ok) throw new Error("Failed to upload expense metadata to IPFS");
+    const json = await res.json();
+    return json.data?.cid ?? "";
+}
+
+/**
  * Add Expense Page
+ * Reads real group members from contract, uploads receipt to IPFS, calls createExpense
  */
 export default function AddExpensePage() {
     const params = useParams();
     const router = useRouter();
-    const groupId = params.id as string;
+    const groupAddress = params.id as Address;
 
-    // Mock data - will be replaced with contract reads
-    const mockMembers = [
-        "0x1234567890123456789012345678901234567890",
-        "0xabcdefabcdefabcdefabcdefabcdefabcdefabcd",
-        "0x9876543210987654321098765432109876543210",
-    ];
-    const tokenSymbol = "USDC";
-    const userAddress = mockMembers[0];
+    const { address: userAddress } = useWallet();
+    const { isEscrow } = useGroupMode(groupAddress);
+    const infoResult = useGroupInfo(groupAddress, isEscrow);
+    const groupInfo = infoResult.data as [string, Address, bigint, bigint] | undefined;
+    const tokenAddress = groupInfo?.[1];
+    const memberCount = groupInfo ? Number(groupInfo[2]) : 0;
 
-    const [participants, setParticipants] = useState<Participant[]>(
-        mockMembers.map((addr) => ({
-            address: addr,
-            share: 0,
-            selected: true,
-        }))
+    const tokenResult = useTokenInfo(tokenAddress);
+    const tokenSymbol = (tokenResult.symbol as string) ?? "TOKEN";
+    const tokenDecimals = (tokenResult.decimals as number) ?? 18;
+
+    const { members, isLoading: membersLoading } = useGroupMembers(
+        groupAddress,
+        memberCount,
+        isEscrow
     );
+
+    const {
+        createExpense,
+        isPending: txPending,
+        isConfirming,
+        isSuccess: txSuccess,
+        error: txError,
+    } = useCreateExpense(groupAddress, isEscrow);
+
+    const [participants, setParticipants] = useState<Participant[]>([]);
     const [receiptFile, setReceiptFile] = useState<File | null>(null);
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isUploading, setIsUploading] = useState(false);
+    const [submitError, setSubmitError] = useState<string | null>(null);
+
+    // Initialize participants when members load
+    useEffect(() => {
+        if (members.length > 0 && participants.length === 0) {
+            setParticipants(
+                members.map((addr) => ({
+                    address: addr,
+                    share: 0,
+                    selected: true,
+                }))
+            );
+        }
+    }, [members, participants.length]);
+
+    // Navigate back on successful transaction
+    useEffect(() => {
+        if (txSuccess) {
+            router.push(`/groups/${groupAddress}`);
+        }
+    }, [txSuccess, router, groupAddress]);
 
     const {
         register,
@@ -280,16 +362,27 @@ export default function AddExpensePage() {
 
     const amount = parseFloat(watch("amount") || "0");
 
-    // Auto-split equally when amount changes
     const splitEqually = () => {
         const selected = participants.filter((p) => p.selected);
         if (selected.length === 0 || amount <= 0) return;
 
-        const share = amount / selected.length;
+        // Floor each share to 2 decimals, then give remainder to the last participant
+        const baseShare = Math.floor((amount / selected.length) * 100) / 100;
+        const remainder = Math.round((amount - baseShare * selected.length) * 100) / 100;
+
+        let lastSelectedIndex = -1;
+        participants.forEach((p, i) => {
+            if (p.selected) lastSelectedIndex = i;
+        });
+
         setParticipants(
-            participants.map((p) => ({
+            participants.map((p, i) => ({
                 ...p,
-                share: p.selected ? parseFloat(share.toFixed(2)) : 0,
+                share: p.selected
+                    ? i === lastSelectedIndex
+                        ? parseFloat((baseShare + remainder).toFixed(2))
+                        : baseShare
+                    : 0,
             }))
         );
     };
@@ -312,23 +405,69 @@ export default function AddExpensePage() {
     const totalShares = selectedParticipants.reduce((sum, p) => sum + p.share, 0);
     const sharesMatch = Math.abs(totalShares - amount) < 0.01;
 
+    const isSubmitting = isUploading || txPending || isConfirming;
+
     const onSubmit = async (data: AddExpenseFormData) => {
         if (!sharesMatch) return;
+        setSubmitError(null);
 
-        setIsSubmitting(true);
+        try {
+            setIsUploading(true);
 
-        // TODO: Upload receipt to IPFS via /api/pin
-        // TODO: Call contract to create expense
-        console.log("Creating expense:", {
-            ...data,
-            participants: selectedParticipants,
-            receipt: receiptFile,
-        });
+            // 1. Upload receipt to IPFS if provided
+            let receiptCid: string | undefined;
+            if (receiptFile) {
+                const cid = await uploadReceiptToIPFS(receiptFile);
+                if (cid) receiptCid = cid;
+            }
 
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+            // 2. Upload expense metadata to IPFS
+            const metadataCid = await uploadExpenseMetadata({
+                description: data.description,
+                amount: data.amount,
+                receiptCid,
+            });
 
-        router.push(`/groups/${groupId}`);
+            setIsUploading(false);
+
+            // 3. Convert amounts to token units (bigint)
+            //    IMPORTANT: compute shares in bigint to avoid float precision mismatch.
+            //    The contract requires sum(shares) == totalAmount exactly.
+            const totalAmount = parseUnits(data.amount, tokenDecimals);
+            const participantAddresses = selectedParticipants.map(
+                (p) => p.address as Address
+            );
+
+            // Compute each share in bigint; give remainder to last participant
+            const totalSharesFloat = selectedParticipants.reduce((s, p) => s + p.share, 0);
+            const shares: bigint[] = selectedParticipants.map((p) => {
+                // Each share is proportional to its float value relative to the total
+                return (totalAmount * parseUnits(p.share.toString(), tokenDecimals)) /
+                    parseUnits(totalSharesFloat.toString(), tokenDecimals);
+            });
+
+            // Fix rounding: adjust last share so sum(shares) == totalAmount exactly
+            const sharesSum = shares.reduce((a, b) => a + b, BigInt(0));
+            if (sharesSum !== totalAmount && shares.length > 0) {
+                shares[shares.length - 1] += totalAmount - sharesSum;
+            }
+            createExpense(totalAmount, participantAddresses, shares, metadataCid);
+        } catch (err) {
+            setIsUploading(false);
+            setSubmitError(err instanceof Error ? err.message : "Failed to create expense");
+        }
     };
+
+    if (membersLoading || infoResult.isLoading) {
+        return (
+            <div className="min-h-screen bg-[var(--cs-bg-offwhite)]">
+                <Navbar />
+                <div className="flex items-center justify-center py-20">
+                    <Loader2 className="w-10 h-10 animate-spin text-[var(--cs-text-secondary)]" />
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-[var(--cs-bg-offwhite)]">
@@ -337,7 +476,7 @@ export default function AddExpensePage() {
             <main className="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8 py-8">
                 {/* Back button */}
                 <Link
-                    href={`/groups/${groupId}`}
+                    href={`/groups/${groupAddress}`}
                     className="inline-flex items-center gap-2 text-[var(--cs-text-secondary)] hover:text-[var(--cs-text-primary)] mb-6 transition-colors"
                 >
                     <ArrowLeft className="w-4 h-4" />
@@ -418,7 +557,7 @@ export default function AddExpensePage() {
                             <div className="flex items-center gap-2 mt-4 text-[var(--cs-warning)] text-sm">
                                 <AlertCircle className="w-4 h-4" />
                                 <span>
-                                    Shares total ${totalShares.toFixed(2)}, but expense is ${amount.toFixed(2)}
+                                    Shares total {totalShares.toFixed(2)}, but expense is {amount.toFixed(2)}
                                 </span>
                             </div>
                         )}
@@ -437,7 +576,7 @@ export default function AddExpensePage() {
                     </div>
 
                     {/* Preview */}
-                    {amount > 0 && (
+                    {amount > 0 && userAddress && (
                         <motion.div
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -451,16 +590,35 @@ export default function AddExpensePage() {
                         </motion.div>
                     )}
 
+                    {/* Error display */}
+                    {(submitError || txError) && (
+                        <div className="bg-[var(--cs-error)]/10 border border-[var(--cs-error)]/30 rounded-xl p-4">
+                            <p className="text-sm text-[var(--cs-error)]">
+                                {submitError || (txError as Error)?.message || "Transaction failed"}
+                            </p>
+                        </div>
+                    )}
+
                     {/* Submit */}
                     <Button
                         type="submit"
                         disabled={isSubmitting || !sharesMatch || amount <= 0}
                         className="w-full h-14 rounded-xl text-base bg-[var(--cs-card-dark)] hover:bg-[var(--cs-card-dark-secondary)]"
                     >
-                        {isSubmitting ? (
+                        {isUploading ? (
                             <>
                                 <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                                Creating...
+                                Uploading to IPFS...
+                            </>
+                        ) : txPending ? (
+                            <>
+                                <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                                Confirm in Wallet...
+                            </>
+                        ) : isConfirming ? (
+                            <>
+                                <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                                Confirming...
                             </>
                         ) : (
                             "Create Expense"

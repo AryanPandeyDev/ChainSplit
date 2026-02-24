@@ -4,7 +4,7 @@ export function Footer() {
     const currentYear = new Date().getFullYear();
 
     return (
-        <footer className="bg-[var(--cs-card-dark)] text-white py-12">
+        <footer className="bg-[#050505] text-white py-12 border-t border-[rgba(255,255,255,0.08)]">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                     {/* Brand */}
@@ -25,11 +25,6 @@ export function Footer() {
                             <li>
                                 <Link href="/dashboard" className="hover:text-white transition-colors">
                                     Dashboard
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/docs" className="hover:text-white transition-colors">
-                                    Documentation
                                 </Link>
                             </li>
                         </ul>

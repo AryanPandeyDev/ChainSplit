@@ -1,41 +1,41 @@
-import { http, createConfig } from "wagmi";
+import { http, webSocket, fallback, createConfig } from "wagmi";
 import { mainnet, sepolia, foundry } from "wagmi/chains";
 import { injected } from "wagmi/connectors";
 
 /**
- * Determines which chain to use based on environment configuration.
- * Defaults to local Foundry/Anvil for development.
+ * All chains the app supports. Wagmi needs transport definitions for each.
+ * The order determines the default chain for unconnected state.
  */
-function getConfiguredChain() {
-    const chainId = parseInt(process.env.NEXT_PUBLIC_CHAIN_ID || "31337", 10);
+const supportedChains = [foundry, sepolia, mainnet] as const;
 
-    switch (chainId) {
-        case 1:
-            return mainnet;
-        case 11155111:
-            return sepolia;
-        case 31337:
-        default:
-            return foundry;
-    }
-}
+/**
+ * The chain this deployment targets — determined by NEXT_PUBLIC_CHAIN_ID.
+ * Contract addresses in .env correspond to this chain.
+ * Used to detect wallet/network mismatches and prompt switching.
+ */
+const targetChainId = parseInt(process.env.NEXT_PUBLIC_CHAIN_ID || "31337", 10);
+export const targetChain =
+    supportedChains.find((c) => c.id === targetChainId) ?? foundry;
 
-const chain = getConfiguredChain();
+const rpcUrl = process.env.NEXT_PUBLIC_RPC_URL || "http://127.0.0.1:8545";
+const wsUrl = process.env.NEXT_PUBLIC_WS_URL || "ws://127.0.0.1:8545";
 
 /**
  * Wagmi configuration for ChainSplit.
- * Uses injected connector for browser wallet extensions (MetaMask, Coinbase, etc.)
+ *
+ * - Lists all supported chains so wagmi can match any wallet network
+ * - Uses injected connector for browser wallets (MetaMask, Coinbase, etc.)
+ * - WebSocket transport (with HTTP fallback) for real-time event subscriptions
+ * - SSR enabled for Next.js App Router
  */
 export const wagmiConfig = createConfig({
-    chains: [chain],
-    connectors: [
-        injected(),
-    ],
+    chains: supportedChains,
+    connectors: [injected()],
     transports: {
-        [chain.id]: http(process.env.NEXT_PUBLIC_RPC_URL || "http://127.0.0.1:8545"),
+        [foundry.id]: fallback([webSocket(wsUrl), http(rpcUrl)]),
+        [sepolia.id]: http(),
+        [mainnet.id]: http(),
     },
-    ssr: true, // Enable SSR support for Next.js App Router
+    ssr: true,
 });
 
-// Export chain for use in components
-export { chain };

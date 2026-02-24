@@ -14,6 +14,8 @@ import { Badge } from "@/components/ui/badge";
 import { AlertTriangle, Loader2, Check, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+import { explorerTxUrl } from "@/lib/explorer";
+
 type ApprovalType = "exact" | "bounded";
 
 interface AcceptExpenseModalProps {
@@ -26,7 +28,7 @@ interface AcceptExpenseModalProps {
         yourShare: number;
         tokenSymbol: string;
     };
-    onAccept: (approvalType: ApprovalType, boundedAmount?: number, boundedDays?: number) => void;
+    onAccept: (approvalType: ApprovalType, boundedAmount?: number, boundedDays?: number) => Promise<void>;
 }
 
 /**
@@ -46,17 +48,18 @@ export function AcceptExpenseModal({
 
     const handleAccept = async () => {
         setIsApproving(true);
-
-        if (approvalType === "exact") {
-            onAccept("exact");
-        } else {
-            onAccept("bounded", parseFloat(boundedAmount), parseInt(boundedDays));
+        try {
+            if (approvalType === "exact") {
+                await onAccept("exact");
+            } else {
+                await onAccept("bounded", parseFloat(boundedAmount), parseInt(boundedDays));
+            }
+            onOpenChange(false);
+        } catch (err) {
+            console.error("Accept expense failed:", err);
+        } finally {
+            setIsApproving(false);
         }
-
-        // Simulate transaction
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-        setIsApproving(false);
-        onOpenChange(false);
     };
 
     return (
@@ -266,7 +269,7 @@ export function TransactionStatus({
     onDismiss,
     successAction,
 }: TransactionStatusProps) {
-    const explorerUrl = txHash ? `https://etherscan.io/tx/${txHash}` : undefined;
+    const explorerUrl = txHash ? explorerTxUrl(txHash) : undefined;
 
     if (status === "pending") {
         return (

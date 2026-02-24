@@ -1,1 +1,1 @@
-export { AnimatedBackground, FloatingShapes, GridPattern, GradientMesh, NoiseTexture } from "./animated-background";
+export { AnimatedBackground } from "./animated-background";

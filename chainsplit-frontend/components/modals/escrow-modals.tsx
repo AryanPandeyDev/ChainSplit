@@ -32,6 +32,7 @@ interface DepositModalProps {
     tokenSymbol: string;
     tokenAddress: string;
     groupAddress: string;
+    onApprove: () => Promise<void>;
     onDeposit: () => Promise<void>;
 }
 
@@ -46,28 +47,42 @@ export function DepositModal({
     tokenSymbol,
     tokenAddress,
     groupAddress,
+    onApprove,
     onDeposit,
 }: DepositModalProps) {
     const [step, setStep] = useState<"approve" | "deposit" | "done">("approve");
     const [isProcessing, setIsProcessing] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     const handleApprove = async () => {
         setIsProcessing(true);
-        // TODO: Call token.approve(groupAddress, requiredDeposit)
-        await new Promise((r) => setTimeout(r, 2000));
-        setStep("deposit");
-        setIsProcessing(false);
+        setError(null);
+        try {
+            await onApprove();
+            setStep("deposit");
+        } catch (err) {
+            setError(err instanceof Error ? err.message : "Approval failed");
+        } finally {
+            setIsProcessing(false);
+        }
     };
 
     const handleDeposit = async () => {
         setIsProcessing(true);
-        await onDeposit();
-        setStep("done");
-        setIsProcessing(false);
+        setError(null);
+        try {
+            await onDeposit();
+            setStep("done");
+        } catch (err) {
+            setError(err instanceof Error ? err.message : "Deposit failed");
+        } finally {
+            setIsProcessing(false);
+        }
     };
 
     const handleClose = () => {
         setStep("approve");
+        setError(null);
         onOpenChange(false);
     };
 
