@@ -102,7 +102,7 @@ export function ExpenseCard({
         <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-xl border border-[var(--cs-border-light)] p-4 sm:p-5 hover:shadow-md transition-shadow"
+            className="bg-[var(--cs-card-bg)] rounded-xl border border-[var(--cs-border-light)] p-4 sm:p-5 hover:shadow-md transition-shadow"
         >
             <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                 {/* Left: Info */}
@@ -150,7 +150,7 @@ export function ExpenseCard({
                             <Button
                                 onClick={onAccept}
                                 size="sm"
-                                className="bg-[var(--cs-accent-green)] hover:bg-[var(--cs-accent-green-hover)] text-[var(--cs-text-primary)]"
+                                className="app-btn-accent"
                             >
                                 Accept
                             </Button>
@@ -159,7 +159,7 @@ export function ExpenseCard({
                             <Button
                                 onClick={onSettle}
                                 size="sm"
-                                className="bg-[var(--cs-card-dark)] hover:bg-[var(--cs-card-dark-secondary)]"
+                                className="app-btn-info"
                             >
                                 Settle
                             </Button>

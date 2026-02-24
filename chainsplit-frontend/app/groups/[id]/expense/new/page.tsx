@@ -145,7 +145,7 @@ function FileUpload({
         return (
             <div className="relative rounded-xl border border-[var(--cs-border-light)] p-4 bg-[var(--cs-bg-gray)]">
                 <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-lg bg-white flex items-center justify-center">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-[var(--cs-card-bg)]">
                         <Upload className="w-6 h-6 text-[var(--cs-accent-green)]" />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -460,7 +460,7 @@ export default function AddExpensePage() {
 
     if (membersLoading || infoResult.isLoading) {
         return (
-            <div className="min-h-screen bg-[var(--cs-bg-offwhite)]">
+            <div className="app-ui min-h-screen bg-[var(--cs-bg-offwhite)]">
                 <Navbar />
                 <div className="flex items-center justify-center py-20">
                     <Loader2 className="w-10 h-10 animate-spin text-[var(--cs-text-secondary)]" />
@@ -470,7 +470,7 @@ export default function AddExpensePage() {
     }
 
     return (
-        <div className="min-h-screen bg-[var(--cs-bg-offwhite)]">
+        <div className="app-ui min-h-screen bg-[var(--cs-bg-offwhite)]">
             <Navbar />
 
             <main className="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8 py-8">
@@ -489,7 +489,7 @@ export default function AddExpensePage() {
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                     {/* Amount */}
-                    <div className="bg-white rounded-xl border border-[var(--cs-border-light)] p-5">
+                    <div className="bg-[var(--cs-card-bg)] rounded-xl border border-[var(--cs-border-light)] p-5">
                         <label className="text-sm font-medium text-[var(--cs-text-primary)] mb-3 block">
                             Amount *
                         </label>
@@ -512,7 +512,7 @@ export default function AddExpensePage() {
                     </div>
 
                     {/* Description */}
-                    <div className="bg-white rounded-xl border border-[var(--cs-border-light)] p-5">
+                    <div className="bg-[var(--cs-card-bg)] rounded-xl border border-[var(--cs-border-light)] p-5">
                         <label className="text-sm font-medium text-[var(--cs-text-primary)] mb-3 block">
                             Description *
                         </label>
@@ -527,7 +527,7 @@ export default function AddExpensePage() {
                     </div>
 
                     {/* Split between */}
-                    <div className="bg-white rounded-xl border border-[var(--cs-border-light)] p-5">
+                    <div className="bg-[var(--cs-card-bg)] rounded-xl border border-[var(--cs-border-light)] p-5">
                         <div className="flex items-center justify-between mb-4">
                             <label className="text-sm font-medium text-[var(--cs-text-primary)]">
                                 Split between *
@@ -564,7 +564,7 @@ export default function AddExpensePage() {
                     </div>
 
                     {/* Receipt */}
-                    <div className="bg-white rounded-xl border border-[var(--cs-border-light)] p-5">
+                    <div className="bg-[var(--cs-card-bg)] rounded-xl border border-[var(--cs-border-light)] p-5">
                         <label className="text-sm font-medium text-[var(--cs-text-primary)] mb-3 block">
                             Receipt (optional)
                         </label>
@@ -603,7 +603,7 @@ export default function AddExpensePage() {
                     <Button
                         type="submit"
                         disabled={isSubmitting || !sharesMatch || amount <= 0}
-                        className="w-full h-14 rounded-xl text-base bg-[var(--cs-card-dark)] hover:bg-[var(--cs-card-dark-secondary)]"
+                        className="app-btn-neutral w-full h-14 rounded-xl text-base"
                     >
                         {isUploading ? (
                             <>

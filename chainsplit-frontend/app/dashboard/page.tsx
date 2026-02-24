@@ -33,7 +33,7 @@ function EmptyState({ onCreateGroup }: { onCreateGroup: () => void }) {
             </p>
             <Button
                 onClick={onCreateGroup}
-                className="rounded-full px-6 py-5 bg-[var(--cs-card-dark)] hover:bg-[var(--cs-card-dark-secondary)] text-white"
+                className="app-btn-neutral rounded-full px-6 py-5"
             >
                 <Plus className="w-5 h-5 mr-2" />
                 Create Your First Group
@@ -78,7 +78,7 @@ function NotConnectedState() {
             <Button
                 onClick={connect}
                 disabled={isConnecting}
-                className="rounded-full px-6 py-5 bg-[var(--cs-card-dark)] hover:bg-[var(--cs-card-dark-secondary)] text-white"
+                className="app-btn-neutral rounded-full px-6 py-5"
             >
                 <Wallet className="w-5 h-5 mr-2" />
                 {isConnecting ? "Connecting..." : "Connect Wallet"}
@@ -102,7 +102,7 @@ function ConnectedGroupCard({
 
     if (isLoading || !details) {
         return (
-            <div className="bg-white border border-[var(--cs-border-light)] rounded-2xl p-5 sm:p-6 animate-pulse">
+            <div className="bg-[var(--cs-card-bg)] border border-[var(--cs-border-light)] rounded-2xl p-5 sm:p-6 animate-pulse">
                 <div className="h-5 bg-[var(--cs-bg-gray)] rounded w-1/3 mb-3" />
                 <div className="h-4 bg-[var(--cs-bg-gray)] rounded w-1/2" />
             </div>
@@ -174,7 +174,7 @@ export default function DashboardPage() {
     const groups = (groupAddresses ?? []) as Address[];
 
     return (
-        <div className="min-h-screen bg-[var(--cs-bg-offwhite)]">
+        <div className="app-ui min-h-screen bg-[var(--cs-bg-offwhite)]">
             <Navbar />
 
             <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
@@ -206,7 +206,7 @@ export default function DashboardPage() {
                                 </Button>
                                 <Button
                                     onClick={() => setCreateModalOpen(true)}
-                                    className="rounded-full px-6 py-5 bg-[var(--cs-card-dark)] hover:bg-[var(--cs-card-dark-secondary)] text-white"
+                                    className="app-btn-neutral rounded-full px-6 py-5"
                                 >
                                     <Plus className="w-5 h-5 mr-2" />
                                     Create Group

@@ -64,7 +64,7 @@ export function AcceptExpenseModal({
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-md">
+            <DialogContent className="sm:max-w-md font-[family-name:var(--font-app-sans)] tracking-[0.08em]">
                 <DialogHeader>
                     <DialogTitle className="text-xl">Accept Expense</DialogTitle>
                     <DialogDescription>
@@ -225,7 +225,7 @@ export function AcceptExpenseModal({
                         <Button
                             onClick={handleAccept}
                             disabled={isApproving}
-                            className="flex-1 h-12 bg-[var(--cs-card-dark)] hover:bg-[var(--cs-card-dark-secondary)]"
+                            className="app-btn-neutral flex-1 h-12"
                         >
                             {isApproving ? (
                                 <>
@@ -273,7 +273,7 @@ export function TransactionStatus({
 
     if (status === "pending") {
         return (
-            <div className="bg-white rounded-xl border border-[var(--cs-border-light)] p-6">
+            <div className="bg-[var(--cs-card-bg)] rounded-xl border border-[var(--cs-border-light)] p-6">
                 <div className="flex items-center gap-4">
                     <div className="relative">
                         <Loader2 className="w-8 h-8 text-[var(--cs-accent-green)] animate-spin" />
@@ -331,7 +331,7 @@ export function TransactionStatus({
                         {successAction && (
                             <Button
                                 onClick={successAction.onClick}
-                                className="bg-[var(--cs-success)] hover:bg-[var(--cs-success)]/90"
+                                className="app-btn-success"
                             >
                                 {successAction.label}
                             </Button>

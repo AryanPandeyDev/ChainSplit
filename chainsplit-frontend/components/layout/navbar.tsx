@@ -14,6 +14,7 @@ import {
 import { Menu, Wallet, LogOut, Copy, ExternalLink } from "lucide-react";
 import { useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { LogoMark } from "./logo-mark";
 
 /**
  * Truncate address for display
@@ -52,8 +53,10 @@ export function Navbar({ transparent = false }: NavbarProps) {
                             href="/"
                             className="flex items-center gap-2 text-xl font-semibold text-white hover:opacity-80 transition-opacity"
                         >
-                            <span className="text-2xl">🔗</span>
-                            <span>ChainSplit</span>
+                            <LogoMark className="size-6" />
+                            <span className="font-[family-name:var(--font-landing-wordmark)] text-[0.92rem] uppercase tracking-[0.16em]">
+                                ChainSplit
+                            </span>
                         </Link>
 
                         {/* Center — glassmorphic pill nav */}
@@ -163,11 +166,11 @@ export function Navbar({ transparent = false }: NavbarProps) {
 
     /* ── Default: solid navbar for app pages ── */
     return (
-        <nav className="sticky top-0 z-50 w-full bg-[var(--cs-bg-offwhite)] border-b border-[var(--cs-border-light)] transition-colors duration-200">
+        <nav className="sticky top-0 z-50 w-full border-b border-[var(--cs-border-light)] bg-[rgba(5,5,5,0.88)] backdrop-blur-xl transition-colors duration-200">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="flex h-16 items-center justify-between">
                     <Link href="/" className="flex items-center gap-2 text-xl font-semibold text-[var(--cs-text-primary)] hover:opacity-80 transition-opacity">
-                        <span className="text-2xl">🔗</span>
+                        <LogoMark className="size-6" />
                         <span>ChainSplit</span>
                     </Link>
                     <div className="hidden md:flex items-center gap-6">
@@ -179,12 +182,12 @@ export function Navbar({ transparent = false }: NavbarProps) {
                         {isConnected && address ? (
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                    <Button variant="outline" className="rounded-full px-4 py-2 border-[var(--cs-border-light)] bg-white hover:bg-gray-50">
+                                    <Button variant="outline" className="rounded-full px-4 py-2 border-[var(--cs-border-light)] bg-[var(--cs-card-bg)] hover:bg-[var(--cs-bg-gray)]">
                                         <Wallet className="w-4 h-4 mr-2" />
                                         {truncateAddress(address)}
                                     </Button>
                                 </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end" className="w-48">
+                                <DropdownMenuContent align="end" className="w-48 font-[family-name:var(--font-app-sans)] tracking-[0.08em]">
                                     <DropdownMenuItem onClick={handleCopyAddress}>
                                         <Copy className="w-4 h-4 mr-2" /> Copy Address
                                     </DropdownMenuItem>
@@ -200,7 +203,7 @@ export function Navbar({ transparent = false }: NavbarProps) {
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         ) : (
-                            <Button onClick={connect} disabled={isConnecting} className="rounded-full px-6 py-2 bg-[var(--cs-card-dark)] text-white hover:bg-[var(--cs-card-dark-secondary)]">
+                            <Button onClick={connect} disabled={isConnecting} className="app-btn-neutral rounded-full px-6 py-2">
                                 {isConnecting ? "Connecting..." : "Connect Wallet"}
                             </Button>
                         )}
@@ -209,7 +212,7 @@ export function Navbar({ transparent = false }: NavbarProps) {
                         <SheetTrigger asChild className="md:hidden">
                             <Button variant="ghost" size="icon"><Menu className="h-6 w-6" /></Button>
                         </SheetTrigger>
-                        <SheetContent side="right" className="w-[280px]">
+                        <SheetContent side="right" className="w-[280px] font-[family-name:var(--font-app-sans)] tracking-[0.08em]">
                             <div className="flex flex-col gap-6 mt-8">
                                 {isConnected && navLinks.map((link) => (
                                     <Link key={link.href} href={link.href} onClick={() => setMobileOpen(false)} className="text-lg font-medium">{link.label}</Link>
@@ -226,7 +229,7 @@ export function Navbar({ transparent = false }: NavbarProps) {
                                     </>
                                 )}
                                 {!isConnected && (
-                                    <Button onClick={() => { connect(); setMobileOpen(false); }} disabled={isConnecting} className="w-full rounded-full bg-[var(--cs-card-dark)] text-white">
+                                    <Button onClick={() => { connect(); setMobileOpen(false); }} disabled={isConnecting} className="app-btn-neutral w-full rounded-full">
                                         {isConnecting ? "Connecting..." : "Connect Wallet"}
                                     </Button>
                                 )}

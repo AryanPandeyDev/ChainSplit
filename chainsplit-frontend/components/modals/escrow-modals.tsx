@@ -88,7 +88,7 @@ export function DepositModal({
 
     return (
         <Dialog open={open} onOpenChange={handleClose}>
-            <DialogContent className="sm:max-w-md">
+            <DialogContent className="sm:max-w-md font-[family-name:var(--font-app-sans)] tracking-[0.08em]">
                 <DialogHeader>
                     <DialogTitle className="text-xl">Deposit to Group</DialogTitle>
                     <DialogDescription>
@@ -146,7 +146,7 @@ export function DepositModal({
                                         onClick={handleApprove}
                                         disabled={isProcessing}
                                         size="sm"
-                                        className="bg-[var(--cs-card-dark)] hover:bg-[var(--cs-card-dark-secondary)]"
+                                        className="app-btn-neutral"
                                     >
                                         {isProcessing ? (
                                             <Loader2 className="w-4 h-4 animate-spin" />
@@ -193,7 +193,7 @@ export function DepositModal({
                                         onClick={handleDeposit}
                                         disabled={isProcessing}
                                         size="sm"
-                                        className="bg-[var(--cs-card-dark)] hover:bg-[var(--cs-card-dark-secondary)]"
+                                        className="app-btn-neutral"
                                     >
                                         {isProcessing ? (
                                             <Loader2 className="w-4 h-4 animate-spin" />
@@ -221,7 +221,7 @@ export function DepositModal({
 
                     {/* Close button */}
                     {step === "done" && (
-                        <Button onClick={handleClose} className="w-full h-12">
+                        <Button onClick={handleClose} className="app-btn-neutral w-full h-12">
                             Close
                         </Button>
                     )}
@@ -277,7 +277,7 @@ export function CloseGroupModal({
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-md">
+            <DialogContent className="sm:max-w-md font-[family-name:var(--font-app-sans)] tracking-[0.08em]">
                 <DialogHeader>
                     <DialogTitle className="text-xl">Close Group</DialogTitle>
                     <DialogDescription>
@@ -345,7 +345,7 @@ export function CloseGroupModal({
                         <Button
                             onClick={handleAction}
                             disabled={isProcessing}
-                            className="w-full h-12 bg-[var(--cs-card-dark)] hover:bg-[var(--cs-card-dark-secondary)]"
+                            className="app-btn-neutral w-full h-12"
                         >
                             {isProcessing ? (
                                 <>
@@ -417,7 +417,7 @@ export function WithdrawModal({
 
     return (
         <Dialog open={open} onOpenChange={handleClose}>
-            <DialogContent className="sm:max-w-md">
+            <DialogContent className="sm:max-w-md font-[family-name:var(--font-app-sans)] tracking-[0.08em]">
                 <DialogHeader>
                     <DialogTitle className="text-xl">Withdraw Funds</DialogTitle>
                     <DialogDescription>
@@ -453,7 +453,7 @@ export function WithdrawModal({
                             <Button
                                 onClick={handleWithdraw}
                                 disabled={isProcessing || balance <= 0}
-                                className="w-full h-12 bg-[var(--cs-accent-green)] hover:bg-[var(--cs-accent-green-hover)] text-[var(--cs-text-primary)]"
+                                className="app-btn-accent w-full h-12"
                             >
                                 {isProcessing ? (
                                     <>
@@ -474,7 +474,7 @@ export function WithdrawModal({
                             <p className="text-sm text-[var(--cs-text-secondary)] mt-2">
                                 ${balance.toFixed(2)} {tokenSymbol} has been sent to your wallet
                             </p>
-                            <Button onClick={handleClose} className="mt-4 w-full">
+                            <Button onClick={handleClose} className="app-btn-neutral mt-4 w-full">
                                 Done
                             </Button>
                         </div>

@@ -91,7 +91,7 @@ export default function ExpenseDetailPage() {
 
     if (isLoading || !expenseData) {
         return (
-            <div className="min-h-screen bg-[var(--cs-bg-offwhite)]">
+            <div className="app-ui min-h-screen bg-[var(--cs-bg-offwhite)]">
                 <Navbar />
                 <div className="flex items-center justify-center py-20">
                     <Loader2 className="w-10 h-10 animate-spin text-[var(--cs-text-secondary)]" />
@@ -121,7 +121,7 @@ export default function ExpenseDetailPage() {
     const isSettling = settlePending || settleConfirming;
 
     return (
-        <div className="min-h-screen bg-[var(--cs-bg-offwhite)]">
+        <div className="app-ui min-h-screen bg-[var(--cs-bg-offwhite)]">
             <Navbar />
             <main className="max-w-3xl mx-auto px-4 py-8">
                 {/* Back link */}
@@ -134,7 +134,7 @@ export default function ExpenseDetailPage() {
                 </Link>
 
                 {/* Header */}
-                <div className="bg-white rounded-2xl border border-[var(--cs-border-light)] p-6 mb-6">
+                <div className="bg-[var(--cs-card-bg)] rounded-2xl border border-[var(--cs-border-light)] p-6 mb-6">
                     <div className="flex items-start justify-between mb-4">
                         <div>
                             <h1 className="text-2xl font-bold mb-1">
@@ -188,7 +188,7 @@ export default function ExpenseDetailPage() {
                             <p className="text-xl font-bold">
                                 {acceptedCount} / {nonPayerCount}
                             </p>
-                            <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+                            <div className="w-full bg-[var(--cs-bg-gray)] rounded-full h-2 mt-2">
                                 <div
                                     className="bg-[var(--cs-success)] h-2 rounded-full transition-all"
                                     style={{
@@ -215,7 +215,7 @@ export default function ExpenseDetailPage() {
                                     <Button
                                         onClick={() => settleExpense(expenseId)}
                                         disabled={isSettling}
-                                        className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-6"
+                                        className="app-btn-info rounded-full px-6"
                                     >
                                         {isSettling ? (
                                             <Loader2 className="w-4 h-4 animate-spin mr-2" />
@@ -225,7 +225,7 @@ export default function ExpenseDetailPage() {
                                 </div>
                             )}
                             {settleSuccess && (
-                                <div className="flex items-center gap-2 text-green-600">
+                                <div className="flex items-center gap-2 text-[var(--cs-success)]">
                                     <CheckCircle2 className="w-5 h-5" />
                                     <span className="font-medium">Expense settled successfully!</span>
                                 </div>
@@ -240,7 +240,7 @@ export default function ExpenseDetailPage() {
                 </div>
 
                 {/* Participants */}
-                <div className="bg-white rounded-2xl border border-[var(--cs-border-light)] p-6 mb-6">
+                <div className="bg-[var(--cs-card-bg)] rounded-2xl border border-[var(--cs-border-light)] p-6 mb-6">
                     <h2 className="text-lg font-semibold mb-4">Participants & Shares</h2>
                     <div className="space-y-3">
                         {participants.map((participant, i) => {
@@ -268,14 +268,14 @@ export default function ExpenseDetailPage() {
 
                 {/* IPFS Receipt */}
                 {metadata?.receiptCid && (
-                    <div className="bg-white rounded-2xl border border-[var(--cs-border-light)] p-6 mb-6">
+                    <div className="bg-[var(--cs-card-bg)] rounded-2xl border border-[var(--cs-border-light)] p-6 mb-6">
                         <div className="flex items-center justify-between mb-4">
                             <h2 className="text-lg font-semibold">Receipt</h2>
                             <a
                                 href={`${PINATA_GATEWAY}/${metadata.receiptCid}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-sm text-blue-600 hover:text-blue-800 inline-flex items-center gap-1"
+                                className="inline-flex items-center gap-1 text-sm text-[var(--cs-accent-green)] hover:text-[var(--cs-accent-green-hover)]"
                             >
                                 View on IPFS <ExternalLink className="w-3 h-3" />
                             </a>
@@ -291,7 +291,7 @@ export default function ExpenseDetailPage() {
 
                 {/* IPFS Info */}
                 {ipfsCid && (
-                    <div className="bg-white rounded-2xl border border-[var(--cs-border-light)] p-6">
+                    <div className="bg-[var(--cs-card-bg)] rounded-2xl border border-[var(--cs-border-light)] p-6">
                         <h2 className="text-lg font-semibold mb-2">On-chain Metadata</h2>
                         <div className="flex items-center gap-2">
                             <span className="text-sm text-[var(--cs-text-secondary)]">IPFS CID:</span>
@@ -302,7 +302,7 @@ export default function ExpenseDetailPage() {
                                 href={`${PINATA_GATEWAY}/${ipfsCid}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-blue-600 hover:text-blue-800"
+                                className="text-[var(--cs-accent-green)] hover:text-[var(--cs-accent-green-hover)]"
                             >
                                 <ExternalLink className="w-4 h-4" />
                             </a>
@@ -357,10 +357,10 @@ function ParticipantRow({
                     className={cn(
                         "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold",
                         isPayer
-                            ? "bg-blue-100 text-blue-700"
+                            ? "bg-[var(--cs-accent-green)]/15 text-[var(--cs-accent-green)]"
                             : accepted
-                                ? "bg-green-100 text-green-700"
-                                : "bg-gray-100 text-gray-500"
+                                ? "bg-[var(--cs-success)]/20 text-[var(--cs-success)]"
+                                : "bg-[var(--cs-bg-gray)] text-[var(--cs-text-secondary)]"
                     )}
                 >
                     {isPayer ? "P" : accepted ? "✓" : "?"}
@@ -369,12 +369,12 @@ function ParticipantRow({
                     <p className="font-mono text-sm font-medium">{shortAddr}</p>
                     <div className="flex items-center gap-2">
                         {isPayer && (
-                            <span className="text-xs text-blue-600 font-medium">Payer</span>
+                            <span className="text-xs font-medium text-[var(--cs-accent-green)]">Payer</span>
                         )}
                         {!isPayer && isPending && (
                             <span className={cn(
                                 "text-xs font-medium",
-                                accepted ? "text-green-600" : "text-amber-600"
+                                accepted ? "text-[var(--cs-success)]" : "text-[var(--cs-warning)]"
                             )}>
                                 {accepted ? "Accepted" : "Pending"}
                             </span>

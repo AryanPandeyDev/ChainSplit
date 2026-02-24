@@ -145,7 +145,7 @@ export function CreateGroupModal({ open, onOpenChange, onGroupCreated }: CreateG
 
     return (
         <Dialog open={open} onOpenChange={handleClose}>
-            <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
+            <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto font-[family-name:var(--font-app-sans)] tracking-[0.08em]">
                 <DialogHeader>
                     <DialogTitle className="text-xl">Create New Group</DialogTitle>
                     <DialogDescription>
@@ -359,7 +359,7 @@ export function CreateGroupModal({ open, onOpenChange, onGroupCreated }: CreateG
                         <Button
                             type="submit"
                             disabled={isLoading}
-                            className="flex-1 h-12 bg-[var(--cs-card-dark)] hover:bg-[var(--cs-card-dark-secondary)]"
+                            className="app-btn-neutral flex-1 h-12"
                         >
                             {isLoading ? (
                                 <>

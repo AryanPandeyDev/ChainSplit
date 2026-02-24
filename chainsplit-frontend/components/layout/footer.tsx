@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LogoMark } from "./logo-mark";
 
 export function Footer() {
     const currentYear = new Date().getFullYear();
@@ -9,9 +10,11 @@ export function Footer() {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                     {/* Brand */}
                     <div className="col-span-1 md:col-span-2">
-                        <Link href="/" className="flex items-center gap-2 text-xl font-semibold mb-4">
-                            <span className="text-2xl">🔗</span>
-                            <span>ChainSplit</span>
+                        <Link href="/" className="mb-4 flex items-center gap-2 text-xl font-semibold">
+                            <LogoMark className="size-6" />
+                            <span className="font-[family-name:var(--font-landing-wordmark)] text-[0.92rem] uppercase tracking-[0.16em]">
+                                ChainSplit
+                            </span>
                         </Link>
                         <p className="text-gray-400 max-w-sm">
                             Split expenses with friends and settle on-chain. Trustless, transparent, and secure.

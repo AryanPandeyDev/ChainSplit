@@ -49,9 +49,9 @@ export function GroupCard({
     return (
         <Link href={`/groups/${address}`}>
             <motion.div
-                whileHover={{ scale: 1.01, boxShadow: "0 8px 30px rgba(15, 15, 15, 0.08)" }}
+                whileHover={{ scale: 1.01, boxShadow: "var(--cs-shadow-card-hover)" }}
                 whileTap={{ scale: 0.99 }}
-                className="bg-white border border-[var(--cs-border-light)] rounded-2xl p-5 sm:p-6 cursor-pointer transition-colors hover:border-[var(--cs-text-secondary)]"
+                className="bg-[var(--cs-card-bg)] border border-[var(--cs-border-light)] rounded-2xl p-5 sm:p-6 cursor-pointer transition-colors hover:border-[var(--cs-accent-green)]"
             >
                 <div className="flex items-start justify-between gap-4">
                     <div className="flex-1 min-w-0">
@@ -64,7 +64,7 @@ export function GroupCard({
                                 className={cn(
                                     "text-xs font-medium rounded-full px-2.5 py-0.5",
                                     mode === "direct"
-                                        ? "bg-[var(--cs-card-dark)] text-white hover:bg-[var(--cs-card-dark)]"
+                                        ? "bg-[var(--cs-card-dark)] text-[var(--cs-text-on-light)] hover:bg-[var(--cs-card-dark)]"
                                         : "border-[var(--cs-border-light)] text-[var(--cs-text-secondary)]"
                                 )}
                             >

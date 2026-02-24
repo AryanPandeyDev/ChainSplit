@@ -101,13 +101,13 @@ function OverviewTab({
         <div className="space-y-6">
             {/* Stats Grid */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-white rounded-xl p-4 border border-[var(--cs-border-light)]">
+                <div className="bg-[var(--cs-card-bg)] rounded-xl p-4 border border-[var(--cs-border-light)]">
                     <p className="text-sm text-[var(--cs-text-secondary)]">Total Expenses</p>
                     <p className="text-2xl font-semibold mt-1">
                         {totalExpenses.toFixed(2)} {tokenSymbol}
                     </p>
                 </div>
-                <div className="bg-white rounded-xl p-4 border border-[var(--cs-border-light)]">
+                <div className="bg-[var(--cs-card-bg)] rounded-xl p-4 border border-[var(--cs-border-light)]">
                     <p className="text-sm text-[var(--cs-text-secondary)]">Your Balance</p>
                     <p
                         className={cn(
@@ -119,11 +119,11 @@ function OverviewTab({
                         {userBalance.toFixed(2)} {tokenSymbol}
                     </p>
                 </div>
-                <div className="bg-white rounded-xl p-4 border border-[var(--cs-border-light)]">
+                <div className="bg-[var(--cs-card-bg)] rounded-xl p-4 border border-[var(--cs-border-light)]">
                     <p className="text-sm text-[var(--cs-text-secondary)]">Pending</p>
                     <p className="text-2xl font-semibold mt-1">{pendingCount}</p>
                 </div>
-                <div className="bg-white rounded-xl p-4 border border-[var(--cs-border-light)]">
+                <div className="bg-[var(--cs-card-bg)] rounded-xl p-4 border border-[var(--cs-border-light)]">
                     <p className="text-sm text-[var(--cs-text-secondary)]">Settled</p>
                     <p className="text-2xl font-semibold mt-1">{settledCount}</p>
                 </div>
@@ -140,7 +140,7 @@ function OverviewTab({
             )}
 
             {/* Members List */}
-            <div className="bg-white rounded-xl border border-[var(--cs-border-light)] overflow-hidden">
+            <div className="bg-[var(--cs-card-bg)] rounded-xl border border-[var(--cs-border-light)] overflow-hidden">
                 <div className="p-4 border-b border-[var(--cs-border-light)]">
                     <h3 className="font-semibold">Members ({memberCount})</h3>
                 </div>
@@ -233,7 +233,7 @@ function DirectWithdrawSection({
     if (withdrawable <= 0 && !wSuccess) return null;
 
     return (
-        <div className="bg-white rounded-xl border border-[var(--cs-border-light)] p-4">
+        <div className="bg-[var(--cs-card-bg)] rounded-xl border border-[var(--cs-border-light)] p-4">
             <div className="flex items-center justify-between">
                 <div>
                     <h3 className="font-semibold">Withdrawable Balance</h3>
@@ -245,7 +245,7 @@ function DirectWithdrawSection({
                     <Button
                         onClick={() => withdraw()}
                         disabled={wPending || wConfirming}
-                        className="rounded-full bg-blue-600 hover:bg-blue-700 text-white"
+                        className="app-btn-info rounded-full"
                     >
                         {(wPending || wConfirming) ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
                         Withdraw
@@ -413,7 +413,7 @@ function ExpenseCard({
 
     return (
         <Link href={`/groups/${groupAddress}/expense/${expense.id}`}>
-            <div className="bg-white rounded-xl border border-[var(--cs-border-light)] p-4 cursor-pointer hover:border-[var(--cs-card-dark)] transition-colors">
+            <div className="bg-[var(--cs-card-bg)] rounded-xl border border-[var(--cs-border-light)] p-4 cursor-pointer hover:border-[var(--cs-accent-green)] transition-colors">
                 <div className="flex items-center justify-between">
                     <div>
                         <div className="flex items-center gap-2 mb-1">
@@ -467,7 +467,7 @@ function ExpenseCard({
                                 size="sm"
                                 onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleAccept(); }}
                                 disabled={isProcessing}
-                                className="rounded-full bg-[var(--cs-accent-green)] hover:bg-[var(--cs-accent-green-hover)] text-[var(--cs-text-primary)]"
+                                className="app-btn-accent rounded-full"
                             >
                                 {isProcessing ? (
                                     <Loader2 className="w-4 h-4 animate-spin" />
@@ -481,7 +481,7 @@ function ExpenseCard({
                                 size="sm"
                                 onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleSettle(); }}
                                 disabled={isSettling}
-                                className="rounded-full bg-blue-600 hover:bg-blue-700 text-white"
+                                className="app-btn-info rounded-full"
                             >
                                 {isSettling ? (
                                     <Loader2 className="w-4 h-4 animate-spin" />
@@ -553,7 +553,7 @@ function ExpensesTab({
                 <Link href={`/groups/${groupAddress}/expense/new`}>
                     <Button
                         size="sm"
-                        className="rounded-full bg-[var(--cs-card-dark)] hover:bg-[var(--cs-card-dark-secondary)]"
+                        className="app-btn-neutral rounded-full"
                     >
                         <Plus className="w-4 h-4 mr-1" />
                         Add Expense
@@ -613,7 +613,7 @@ function DepositsTab({
 
     return (
         <div className="space-y-4">
-            <div className="bg-white rounded-xl border border-[var(--cs-border-light)] overflow-hidden">
+            <div className="bg-[var(--cs-card-bg)] rounded-xl border border-[var(--cs-border-light)] overflow-hidden">
                 <div className="p-4 border-b border-[var(--cs-border-light)]">
                     <h3 className="font-semibold">Deposit Status</h3>
                 </div>
@@ -663,7 +663,7 @@ function SettingsTab({ groupAddress }: { groupAddress: string }) {
 
     return (
         <div className="space-y-6">
-            <div className="bg-white rounded-xl border border-[var(--cs-border-light)] p-4">
+            <div className="bg-[var(--cs-card-bg)] rounded-xl border border-[var(--cs-border-light)] p-4">
                 <h3 className="font-semibold mb-4">Group Contract</h3>
                 <div className="flex items-center gap-2">
                     <code className="flex-1 bg-[var(--cs-bg-gray)] px-3 py-2 rounded-lg text-sm font-mono">
@@ -750,14 +750,14 @@ function EscrowActionBar({
     const isDeadlinePassed = deadlineDate ? deadlineDate < new Date() : false;
 
     return (
-        <div className="bg-white rounded-xl border border-[var(--cs-border-light)] p-4 mb-6">
+        <div className="bg-[var(--cs-card-bg)] rounded-xl border border-[var(--cs-border-light)] p-4 mb-6">
             <div className="flex flex-wrap items-center gap-3">
                 {/* Pending: Deposit or Cancel */}
                 {isPending && !deposited && !depositSuccess && (
                     <Button
                         onClick={handleDeposit}
                         disabled={approvePending || approveConfirming || depositPending || depositConfirming}
-                        className="rounded-full bg-[var(--cs-accent-green)] hover:bg-[var(--cs-accent-green-hover)] text-[var(--cs-text-primary)]"
+                        className="app-btn-accent rounded-full"
                     >
                         {(approvePending || approveConfirming || depositPending || depositConfirming) ? (
                             <Loader2 className="w-4 h-4 animate-spin mr-2" />
@@ -795,7 +795,7 @@ function EscrowActionBar({
                     <Button
                         onClick={() => proposeClose()}
                         disabled={proposePending || proposeConfirming}
-                        className="rounded-full bg-orange-500 hover:bg-orange-600 text-white"
+                        className="app-btn-warning rounded-full"
                     >
                         {(proposePending || proposeConfirming) ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
                         Propose Close
@@ -807,7 +807,7 @@ function EscrowActionBar({
                     <Button
                         onClick={() => voteClose()}
                         disabled={votePending || voteConfirming}
-                        className="rounded-full bg-orange-500 hover:bg-orange-600 text-white"
+                        className="app-btn-warning rounded-full"
                     >
                         {(votePending || voteConfirming) ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
                         Vote to Close
@@ -822,7 +822,7 @@ function EscrowActionBar({
                     <Button
                         onClick={() => withdraw()}
                         disabled={withdrawPending || withdrawConfirming}
-                        className="rounded-full bg-blue-600 hover:bg-blue-700 text-white"
+                        className="app-btn-info rounded-full"
                     >
                         {(withdrawPending || withdrawConfirming) ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
                         Withdraw
@@ -837,7 +837,7 @@ function EscrowActionBar({
                     <Button
                         onClick={() => refundDeposit()}
                         disabled={refundPending || refundConfirming}
-                        className="rounded-full bg-red-500 hover:bg-red-600 text-white"
+                        className="app-btn-error rounded-full"
                     >
                         {(refundPending || refundConfirming) ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
                         Refund Deposit
@@ -905,7 +905,7 @@ export default function GroupDetailPage() {
 
     if (isLoading || (!directInfo && !escrowInfo)) {
         return (
-            <div className="min-h-screen bg-[var(--cs-bg-offwhite)]">
+            <div className="app-ui min-h-screen bg-[var(--cs-bg-offwhite)]">
                 <Navbar />
                 <div className="flex items-center justify-center py-20">
                     <Loader2 className="w-10 h-10 animate-spin text-[var(--cs-text-secondary)]" />
@@ -935,7 +935,7 @@ export default function GroupDetailPage() {
     }
 
     return (
-        <div className="min-h-screen bg-[var(--cs-bg-offwhite)]">
+        <div className="app-ui min-h-screen bg-[var(--cs-bg-offwhite)]">
             <Navbar />
 
             <main className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-8">
@@ -968,9 +968,9 @@ export default function GroupDetailPage() {
                                 <Badge className={cn("rounded-full text-white", {
                                     "bg-yellow-500": groupState === GroupState.Pending,
                                     "bg-green-600": groupState === GroupState.Active,
-                                    "bg-orange-500": groupState === GroupState.ClosePending,
-                                    "bg-blue-600": groupState === GroupState.Closed,
-                                    "bg-red-500": groupState === GroupState.Cancelled,
+                                    "bg-[var(--cs-warning)]": groupState === GroupState.ClosePending,
+                                    "bg-[var(--cs-info)]": groupState === GroupState.Closed,
+                                    "bg-[var(--cs-error)]": groupState === GroupState.Cancelled,
                                 })}>
                                     {GroupState[groupState] ?? "Unknown"}
                                 </Badge>
