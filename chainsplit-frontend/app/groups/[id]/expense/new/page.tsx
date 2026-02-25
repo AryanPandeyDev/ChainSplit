@@ -265,7 +265,9 @@ async function uploadReceiptToIPFS(file: File): Promise<string | null> {
         const json = await res.json();
         return json.data?.cid ?? null;
     } catch {
-        console.error("Failed to upload receipt to IPFS");
+        if (process.env.NODE_ENV !== "production") {
+            console.warn("Receipt upload failed");
+        }
         return null;
     }
 }

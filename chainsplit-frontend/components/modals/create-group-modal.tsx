@@ -131,7 +131,9 @@ export function CreateGroupModal({ open, onOpenChange, onGroupCreated }: CreateG
                 });
             }
         } catch (error) {
-            console.error("Failed to create group:", error);
+            if (process.env.NODE_ENV !== "production") {
+                console.warn("Create group failed:", error);
+            }
             setErrors({ submit: error instanceof Error ? error.message : "Failed to create group" });
         }
     };
@@ -240,9 +242,6 @@ export function CreateGroupModal({ open, onOpenChange, onGroupCreated }: CreateG
                             className="h-12 font-mono text-sm"
                             disabled={isLoading}
                         />
-                        <p className="text-xs text-[var(--cs-text-secondary)]">
-                            Use the MockUSDC address: 0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0
-                        </p>
                         {errors.tokenAddress && (
                             <p className="text-sm text-[var(--cs-error)]">{errors.tokenAddress}</p>
                         )}
@@ -298,7 +297,7 @@ export function CreateGroupModal({ open, onOpenChange, onGroupCreated }: CreateG
                                         addMember();
                                     }
                                 }}
-                                placeholder="0x... (member address)"
+                                placeholder="Member wallet address"
                                 className="h-12 font-mono text-sm flex-1"
                                 disabled={isLoading}
                             />
@@ -337,7 +336,7 @@ export function CreateGroupModal({ open, onOpenChange, onGroupCreated }: CreateG
                         )}
                         {members.length === 0 && (
                             <p className="text-sm text-[var(--cs-text-secondary)]">
-                                Add at least one other member. Try: 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
+                                Add at least one other member.
                             </p>
                         )}
                         {errors.members && (

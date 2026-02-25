@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useWallet } from "@/hooks";
 import { explorerAddressUrl } from "@/lib/explorer";
 import { Button } from "@/components/ui/button";
@@ -31,10 +32,12 @@ interface NavbarProps {
 export function Navbar({ transparent = false }: NavbarProps) {
     const { address, isConnected, isConnecting, connect, disconnect } = useWallet();
     const [mobileOpen, setMobileOpen] = useState(false);
+    const pathname = usePathname();
+    const isDashboardRoute = pathname === "/dashboard" || pathname.startsWith("/dashboard/");
 
-    const navLinks = [
-        { href: "/dashboard", label: "Dashboard" },
-    ];
+    const navLinks = isDashboardRoute
+        ? []
+        : [{ href: "/dashboard", label: "Dashboard" }];
 
     const handleCopyAddress = () => {
         if (address) {

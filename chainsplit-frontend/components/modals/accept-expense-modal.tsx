@@ -56,7 +56,9 @@ export function AcceptExpenseModal({
             }
             onOpenChange(false);
         } catch (err) {
-            console.error("Accept expense failed:", err);
+            if (process.env.NODE_ENV !== "production") {
+                console.warn("Accept expense failed:", err);
+            }
         } finally {
             setIsApproving(false);
         }
