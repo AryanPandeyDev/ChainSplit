@@ -68,7 +68,7 @@ export function AcceptExpenseModal({
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-md font-[family-name:var(--font-app-sans)] tracking-[0.08em]">
                 <DialogHeader>
-                    <DialogTitle className="text-xl">Accept Expense</DialogTitle>
+                    <DialogTitle className="text-xl neon-text-green">Accept Expense</DialogTitle>
                     <DialogDescription>
                         Approve token spending to accept this expense
                     </DialogDescription>
@@ -76,7 +76,7 @@ export function AcceptExpenseModal({
 
                 <div className="space-y-6 mt-4">
                     {/* Expense details */}
-                    <div className="bg-[var(--cs-bg-gray)] rounded-xl p-4">
+                    <div className="bg-[rgba(0,212,255,0.04)] border border-[rgba(0,212,255,0.12)] rounded-xl p-4">
                         <div className="flex justify-between mb-2">
                             <span className="text-[var(--cs-text-secondary)]">Paid by</span>
                             <span className="font-mono text-sm">
@@ -119,7 +119,7 @@ export function AcceptExpenseModal({
                             className={cn(
                                 "w-full p-4 rounded-xl border-2 text-left transition-all",
                                 approvalType === "exact"
-                                    ? "border-[var(--cs-accent-green)] bg-[var(--cs-accent-green)]/5"
+                                    ? "border-[var(--cs-accent-green)] bg-[rgba(0,255,136,0.06)] shadow-[0_0_8px_rgba(0,255,136,0.1)]"
                                     : "border-[var(--cs-border-light)]"
                             )}
                         >
@@ -153,7 +153,7 @@ export function AcceptExpenseModal({
                             className={cn(
                                 "w-full p-4 rounded-xl border-2 text-left transition-all",
                                 approvalType === "bounded"
-                                    ? "border-[var(--cs-accent-green)] bg-[var(--cs-accent-green)]/5"
+                                    ? "border-[var(--cs-accent-green)] bg-[rgba(0,255,136,0.06)] shadow-[0_0_8px_rgba(0,255,136,0.1)]"
                                     : "border-[var(--cs-border-light)]"
                             )}
                         >
@@ -227,7 +227,7 @@ export function AcceptExpenseModal({
                         <Button
                             onClick={handleAccept}
                             disabled={isApproving}
-                            className="app-btn-neutral flex-1 h-12"
+                            className="app-btn-accent flex-1 h-12"
                         >
                             {isApproving ? (
                                 <>

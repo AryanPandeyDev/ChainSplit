@@ -69,7 +69,7 @@ function ParticipantChip({
             className={cn(
                 "rounded-xl border-2 p-3 transition-all cursor-pointer",
                 participant.selected
-                    ? "border-[var(--cs-accent-green)] bg-[var(--cs-accent-green)]/5"
+                    ? "border-[var(--cs-accent-green)] bg-[rgba(0,255,136,0.06)] shadow-[0_0_8px_rgba(0,255,136,0.1)]"
                     : "border-[var(--cs-border-light)] opacity-60"
             )}
             onClick={onToggle}
@@ -143,9 +143,9 @@ function FileUpload({
 
     if (file) {
         return (
-            <div className="relative rounded-xl border border-[var(--cs-border-light)] p-4 bg-[var(--cs-bg-gray)]">
+            <div className="relative rounded-xl border border-[rgba(0,255,136,0.2)] p-4 bg-[var(--cs-bg-gray)] shadow-[0_0_8px_rgba(0,255,136,0.05)]">
                 <div className="flex items-center gap-3">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-[var(--cs-card-bg)]">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-[rgba(0,255,136,0.08)] border border-[rgba(0,255,136,0.15)]">
                         <Upload className="w-6 h-6 text-[var(--cs-accent-green)]" />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -173,7 +173,7 @@ function FileUpload({
             className={cn(
                 "rounded-xl border-2 border-dashed p-8 text-center transition-colors",
                 isDragging
-                    ? "border-[var(--cs-accent-green)] bg-[var(--cs-accent-green)]/5"
+                    ? "border-[var(--cs-accent-green)] bg-[rgba(0,255,136,0.06)] shadow-[0_0_8px_rgba(0,255,136,0.1)]"
                     : "border-[var(--cs-border-light)]"
             )}
             onDragOver={(e) => {
@@ -226,8 +226,8 @@ function ExpensePreview({
         .reduce((sum, p) => sum + p.share, 0);
 
     return (
-        <div className="bg-[var(--cs-bg-gray)] rounded-xl p-5">
-            <h3 className="text-sm font-medium text-[var(--cs-text-secondary)] mb-3">
+        <div className="bg-[rgba(0,212,255,0.04)] border border-[rgba(0,212,255,0.12)] rounded-xl p-5">
+            <h3 className="text-sm font-medium text-[var(--cs-neon-blue)] mb-3 tracking-widest">
                 PREVIEW
             </h3>
             <div className="space-y-2">
@@ -462,7 +462,7 @@ export default function AddExpensePage() {
 
     if (membersLoading || infoResult.isLoading) {
         return (
-            <div className="app-ui min-h-screen bg-[var(--cs-bg-offwhite)]">
+            <div className="app-ui min-h-screen cyber-bg">
                 <Navbar />
                 <div className="flex items-center justify-center py-20">
                     <Loader2 className="w-10 h-10 animate-spin text-[var(--cs-text-secondary)]" />
@@ -472,26 +472,26 @@ export default function AddExpensePage() {
     }
 
     return (
-        <div className="app-ui min-h-screen bg-[var(--cs-bg-offwhite)]">
+        <div className="app-ui min-h-screen cyber-bg">
             <Navbar />
 
             <main className="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8 py-8">
                 {/* Back button */}
                 <Link
                     href={`/groups/${groupAddress}`}
-                    className="inline-flex items-center gap-2 text-[var(--cs-text-secondary)] hover:text-[var(--cs-text-primary)] mb-6 transition-colors"
+                    className="inline-flex items-center gap-2 text-[var(--cs-text-secondary)] hover:text-[var(--cs-accent-green)] mb-6 transition-colors"
                 >
                     <ArrowLeft className="w-4 h-4" />
                     Back to Group
                 </Link>
 
-                <h1 className="text-3xl font-semibold text-[var(--cs-text-primary)] mb-8">
+                <h1 className="text-3xl font-semibold neon-text-green mb-8">
                     Add Expense
                 </h1>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                     {/* Amount */}
-                    <div className="bg-[var(--cs-card-bg)] rounded-xl border border-[var(--cs-border-light)] p-5">
+                    <div className="cyber-card rounded-xl p-5">
                         <label className="text-sm font-medium text-[var(--cs-text-primary)] mb-3 block">
                             Amount *
                         </label>
@@ -605,7 +605,7 @@ export default function AddExpensePage() {
                     <Button
                         type="submit"
                         disabled={isSubmitting || !sharesMatch || amount <= 0}
-                        className="app-btn-neutral w-full h-14 rounded-xl text-base"
+                        className="app-btn-accent w-full h-14 rounded-xl text-base"
                     >
                         {isUploading ? (
                             <>

@@ -90,7 +90,7 @@ export function DepositModal({
         <Dialog open={open} onOpenChange={handleClose}>
             <DialogContent className="sm:max-w-md font-[family-name:var(--font-app-sans)] tracking-[0.08em]">
                 <DialogHeader>
-                    <DialogTitle className="text-xl">Deposit to Group</DialogTitle>
+                    <DialogTitle className="text-xl neon-text-green">Deposit to Group</DialogTitle>
                     <DialogDescription>
                         Deposit funds to participate in this escrow group
                     </DialogDescription>
@@ -98,11 +98,11 @@ export function DepositModal({
 
                 <div className="space-y-6 mt-4">
                     {/* Amount display */}
-                    <div className="bg-[var(--cs-bg-gray)] rounded-xl p-5 text-center">
+                    <div className="bg-[rgba(0,212,255,0.04)] border border-[rgba(0,212,255,0.12)] rounded-xl p-5 text-center">
                         <p className="text-sm text-[var(--cs-text-secondary)] mb-1">
                             Required Deposit
                         </p>
-                        <p className="text-3xl font-semibold">
+                        <p className="text-3xl font-semibold neon-text-green">
                             ${requiredDeposit.toFixed(2)} <span className="text-lg">{tokenSymbol}</span>
                         </p>
                     </div>
@@ -114,7 +114,7 @@ export function DepositModal({
                             className={cn(
                                 "p-4 rounded-xl border-2 transition-all",
                                 step === "approve"
-                                    ? "border-[var(--cs-accent-green)] bg-[var(--cs-accent-green)]/5"
+                                    ? "border-[var(--cs-accent-green)] bg-[rgba(0,255,136,0.06)] shadow-[0_0_8px_rgba(0,255,136,0.1)]"
                                     : step === "deposit" || step === "done"
                                         ? "border-[var(--cs-success)] bg-[var(--cs-success)]/5"
                                         : "border-[var(--cs-border-light)] opacity-50"
@@ -163,7 +163,7 @@ export function DepositModal({
                             className={cn(
                                 "p-4 rounded-xl border-2 transition-all",
                                 step === "deposit"
-                                    ? "border-[var(--cs-accent-green)] bg-[var(--cs-accent-green)]/5"
+                                    ? "border-[var(--cs-accent-green)] bg-[rgba(0,255,136,0.06)] shadow-[0_0_8px_rgba(0,255,136,0.1)]"
                                     : step === "done"
                                         ? "border-[var(--cs-success)] bg-[var(--cs-success)]/5"
                                         : "border-[var(--cs-border-light)] opacity-50"
@@ -279,7 +279,7 @@ export function CloseGroupModal({
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-md font-[family-name:var(--font-app-sans)] tracking-[0.08em]">
                 <DialogHeader>
-                    <DialogTitle className="text-xl">Close Group</DialogTitle>
+                    <DialogTitle className="text-xl neon-text-green">Close Group</DialogTitle>
                     <DialogDescription>
                         All members must vote to close before funds can be withdrawn
                     </DialogDescription>
@@ -419,7 +419,7 @@ export function WithdrawModal({
         <Dialog open={open} onOpenChange={handleClose}>
             <DialogContent className="sm:max-w-md font-[family-name:var(--font-app-sans)] tracking-[0.08em]">
                 <DialogHeader>
-                    <DialogTitle className="text-xl">Withdraw Funds</DialogTitle>
+                    <DialogTitle className="text-xl neon-text-green">Withdraw Funds</DialogTitle>
                     <DialogDescription>
                         Withdraw your available balance to your wallet
                     </DialogDescription>
@@ -429,7 +429,7 @@ export function WithdrawModal({
                     {!success ? (
                         <>
                             {/* Balance display */}
-                            <div className="bg-[var(--cs-bg-gray)] rounded-xl p-5 text-center">
+                            <div className="bg-[rgba(0,212,255,0.04)] border border-[rgba(0,212,255,0.12)] rounded-xl p-5 text-center">
                                 <p className="text-sm text-[var(--cs-text-secondary)] mb-1">
                                     Available to Withdraw
                                 </p>

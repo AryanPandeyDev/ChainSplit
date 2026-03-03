@@ -91,7 +91,7 @@ export default function ExpenseDetailPage() {
 
     if (isLoading || !expenseData) {
         return (
-            <div className="app-ui min-h-screen bg-[var(--cs-bg-offwhite)]">
+            <div className="app-ui min-h-screen cyber-bg">
                 <Navbar />
                 <div className="flex items-center justify-center py-20">
                     <Loader2 className="w-10 h-10 animate-spin text-[var(--cs-text-secondary)]" />
@@ -121,23 +121,23 @@ export default function ExpenseDetailPage() {
     const isSettling = settlePending || settleConfirming;
 
     return (
-        <div className="app-ui min-h-screen bg-[var(--cs-bg-offwhite)]">
+        <div className="app-ui min-h-screen cyber-bg">
             <Navbar />
             <main className="max-w-3xl mx-auto px-4 py-8">
                 {/* Back link */}
                 <Link
                     href={`/groups/${groupAddress}`}
-                    className="inline-flex items-center gap-1 text-sm text-[var(--cs-text-secondary)] hover:text-[var(--cs-text-primary)] mb-6"
+                    className="inline-flex items-center gap-1 text-sm text-[var(--cs-text-secondary)] hover:text-[var(--cs-accent-green)] transition-colors mb-6"
                 >
                     <ArrowLeft className="w-4 h-4" />
                     Back to {groupName}
                 </Link>
 
                 {/* Header */}
-                <div className="bg-[var(--cs-card-bg)] rounded-2xl border border-[var(--cs-border-light)] p-6 mb-6">
+                <div className="cyber-card rounded-2xl p-6 mb-6">
                     <div className="flex items-start justify-between mb-4">
                         <div>
-                            <h1 className="text-2xl font-bold mb-1">
+                            <h1 className="text-2xl font-bold mb-1 neon-text-green">
                                 Expense #{params.expenseId as string}
                             </h1>
                             {metadata?.description && (
@@ -169,26 +169,26 @@ export default function ExpenseDetailPage() {
                     </div>
 
                     {/* Amount */}
-                    <div className="bg-[var(--cs-bg-offwhite)] rounded-xl p-4 mb-4">
+                    <div className="bg-[rgba(0,212,255,0.04)] border border-[rgba(0,212,255,0.12)] rounded-xl p-4 mb-4">
                         <p className="text-sm text-[var(--cs-text-secondary)] mb-1">Total Amount</p>
-                        <p className="text-3xl font-bold">
+                        <p className="text-3xl font-bold neon-text-green">
                             {amount.toFixed(2)} <span className="text-lg text-[var(--cs-text-secondary)]">{tokenSymbol}</span>
                         </p>
                     </div>
 
                     {/* Payer & Acceptance Progress */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="bg-[var(--cs-bg-offwhite)] rounded-xl p-4">
+                        <div className="bg-[rgba(0,212,255,0.04)] border border-[rgba(0,212,255,0.12)] rounded-xl p-4">
                             <p className="text-sm text-[var(--cs-text-secondary)] mb-1">Paid by</p>
                             <p className="font-mono text-sm font-medium">{shortPayer}</p>
                             <p className="text-xs text-[var(--cs-text-secondary)] mt-1 font-mono truncate">{payer}</p>
                         </div>
-                        <div className="bg-[var(--cs-bg-offwhite)] rounded-xl p-4">
+                        <div className="bg-[rgba(0,212,255,0.04)] border border-[rgba(0,212,255,0.12)] rounded-xl p-4">
                             <p className="text-sm text-[var(--cs-text-secondary)] mb-1">Acceptance Progress</p>
-                            <p className="text-xl font-bold">
+                            <p className="text-xl font-bold neon-text-blue">
                                 {acceptedCount} / {nonPayerCount}
                             </p>
-                            <div className="w-full bg-[var(--cs-bg-gray)] rounded-full h-2 mt-2">
+                            <div className="w-full bg-[rgba(0,255,136,0.08)] rounded-full h-2 mt-2">
                                 <div
                                     className="bg-[var(--cs-success)] h-2 rounded-full transition-all"
                                     style={{
@@ -203,7 +203,7 @@ export default function ExpenseDetailPage() {
 
                     {/* Settle Action */}
                     {(canSettle || settleSuccess || settleError) && (
-                        <div className="mt-4 bg-[var(--cs-bg-offwhite)] rounded-xl p-4">
+                        <div className="mt-4 bg-[rgba(0,255,136,0.04)] border border-[rgba(0,255,136,0.12)] rounded-xl p-4">
                             {canSettle && (
                                 <div className="flex items-center justify-between">
                                     <div>
@@ -240,8 +240,8 @@ export default function ExpenseDetailPage() {
                 </div>
 
                 {/* Participants */}
-                <div className="bg-[var(--cs-card-bg)] rounded-2xl border border-[var(--cs-border-light)] p-6 mb-6">
-                    <h2 className="text-lg font-semibold mb-4">Participants & Shares</h2>
+                <div className="cyber-card rounded-2xl p-6 mb-6">
+                    <h2 className="text-lg font-semibold mb-4 neon-text-blue">Participants & Shares</h2>
                     <div className="space-y-3">
                         {participants.map((participant, i) => {
                             const share = Number(formatUnits(shares[i], tokenDecimals));
@@ -268,9 +268,9 @@ export default function ExpenseDetailPage() {
 
                 {/* IPFS Receipt */}
                 {metadata?.receiptCid && (
-                    <div className="bg-[var(--cs-card-bg)] rounded-2xl border border-[var(--cs-border-light)] p-6 mb-6">
+                    <div className="cyber-card rounded-2xl p-6 mb-6">
                         <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-lg font-semibold">Receipt</h2>
+                            <h2 className="text-lg font-semibold neon-text-blue">Receipt</h2>
                             <a
                                 href={`${PINATA_GATEWAY}/${metadata.receiptCid}`}
                                 target="_blank"
@@ -291,8 +291,8 @@ export default function ExpenseDetailPage() {
 
                 {/* IPFS Info */}
                 {ipfsCid && (
-                    <div className="bg-[var(--cs-card-bg)] rounded-2xl border border-[var(--cs-border-light)] p-6">
-                        <h2 className="text-lg font-semibold mb-2">On-chain Metadata</h2>
+                    <div className="cyber-card rounded-2xl p-6">
+                        <h2 className="text-lg font-semibold mb-2 neon-text-blue">On-chain Metadata</h2>
                         <div className="flex items-center gap-2">
                             <span className="text-sm text-[var(--cs-text-secondary)]">IPFS CID:</span>
                             <code className="text-xs bg-[var(--cs-bg-offwhite)] px-2 py-1 rounded font-mono break-all">
@@ -351,7 +351,7 @@ function ParticipantRow({
     const accepted = (hasAcceptedResult.data as boolean) ?? false;
 
     return (
-        <div className="flex items-center justify-between bg-[var(--cs-bg-offwhite)] rounded-xl px-4 py-3">
+        <div className="flex items-center justify-between bg-[rgba(0,212,255,0.04)] border border-[rgba(0,212,255,0.10)] rounded-xl px-4 py-3">
             <div className="flex items-center gap-3">
                 <div
                     className={cn(

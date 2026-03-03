@@ -17,15 +17,11 @@ import { useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { LogoMark } from "./logo-mark";
 
-/**
- * Truncate address for display
- */
 function truncateAddress(address: string): string {
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
 }
 
 interface NavbarProps {
-    /** Whether to use transparent background (for landing page) */
     transparent?: boolean;
 }
 
@@ -45,13 +41,12 @@ export function Navbar({ transparent = false }: NavbarProps) {
         }
     };
 
-    /* ── Landing page: floating transparent layout ── */
+    /* ── Landing page: floating transparent layout (UNCHANGED) ── */
     if (transparent) {
         return (
             <nav className="sticky top-0 z-50 w-full py-4">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center justify-between">
-                        {/* Logo — left */}
                         <Link
                             href="/"
                             className="flex items-center gap-2 text-xl font-semibold text-white hover:opacity-80 transition-opacity"
@@ -62,7 +57,6 @@ export function Navbar({ transparent = false }: NavbarProps) {
                             </span>
                         </Link>
 
-                        {/* Center — glassmorphic pill nav */}
                         <div className="hidden md:flex items-center gap-1 rounded-full border border-[rgba(255,255,255,0.1)] bg-[rgba(255,255,255,0.05)] backdrop-blur-md px-2 py-1.5">
                             {[
                                 { href: "#features", label: "Features" },
@@ -80,7 +74,6 @@ export function Navbar({ transparent = false }: NavbarProps) {
                             ))}
                         </div>
 
-                        {/* Right — CTA / wallet */}
                         <div className="hidden md:flex items-center">
                             {isConnected && address ? (
                                 <DropdownMenu>
@@ -95,26 +88,16 @@ export function Navbar({ transparent = false }: NavbarProps) {
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end" className="w-48">
                                         <DropdownMenuItem onClick={handleCopyAddress}>
-                                            <Copy className="w-4 h-4 mr-2" />
-                                            Copy Address
+                                            <Copy className="w-4 h-4 mr-2" /> Copy Address
                                         </DropdownMenuItem>
                                         <DropdownMenuItem asChild>
-                                            <a
-                                                href={explorerAddressUrl(address)}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                            >
-                                                <ExternalLink className="w-4 h-4 mr-2" />
-                                                View on Explorer
+                                            <a href={explorerAddressUrl(address)} target="_blank" rel="noopener noreferrer">
+                                                <ExternalLink className="w-4 h-4 mr-2" /> View on Explorer
                                             </a>
                                         </DropdownMenuItem>
                                         <DropdownMenuSeparator />
-                                        <DropdownMenuItem
-                                            onClick={() => disconnect()}
-                                            className="text-red-600 focus:text-red-600"
-                                        >
-                                            <LogOut className="w-4 h-4 mr-2" />
-                                            Disconnect
+                                        <DropdownMenuItem onClick={() => disconnect()} className="text-red-600 focus:text-red-600">
+                                            <LogOut className="w-4 h-4 mr-2" /> Disconnect
                                         </DropdownMenuItem>
                                     </DropdownMenuContent>
                                 </DropdownMenu>
@@ -129,7 +112,6 @@ export function Navbar({ transparent = false }: NavbarProps) {
                             )}
                         </div>
 
-                        {/* Mobile hamburger */}
                         <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
                             <SheetTrigger asChild className="md:hidden">
                                 <Button variant="ghost" size="icon" className="text-white hover:bg-[rgba(255,255,255,0.06)]">
@@ -167,30 +149,47 @@ export function Navbar({ transparent = false }: NavbarProps) {
         );
     }
 
-    /* ── Default: solid navbar for app pages ── */
+    /* ── Default: DRAMATIC cyberpunk navbar for app pages ── */
     return (
-        <nav className="sticky top-0 z-50 w-full border-b border-[var(--cs-border-light)] bg-[rgba(5,5,5,0.88)] backdrop-blur-xl transition-colors duration-200">
+        <nav className="sticky top-0 z-50 w-full animate-border-glow"
+            style={{
+                background: "linear-gradient(180deg, rgba(2,6,8,0.95) 0%, rgba(4,14,20,0.90) 100%)",
+                backdropFilter: "blur(24px) saturate(180%)",
+                WebkitBackdropFilter: "blur(24px) saturate(180%)",
+                borderBottom: "1px solid rgba(0,255,136,0.18)",
+                boxShadow: "0 4px 30px rgba(0,0,0,0.5), 0 1px 0 rgba(0,255,136,0.1)",
+            }}
+        >
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="flex h-16 items-center justify-between">
-                    <Link href="/" className="flex items-center gap-2 text-xl font-semibold text-[var(--cs-text-primary)] hover:opacity-80 transition-opacity">
-                        <LogoMark className="size-6" />
-                        <span>ChainSplit</span>
+                    <Link href="/" className="flex items-center gap-2 group">
+                        <LogoMark className="size-6 group-hover:drop-shadow-[0_0_8px_rgba(0,255,136,0.5)] transition-all" />
+                        <span className="neon-text-green text-lg font-bold uppercase tracking-[0.14em]"
+                            style={{ fontFamily: "var(--font-app-display)" }}
+                        >
+                            ChainSplit
+                        </span>
                     </Link>
                     <div className="hidden md:flex items-center gap-6">
                         {isConnected && navLinks.map((link) => (
-                            <Link key={link.href} href={link.href} className="transition-colors font-medium text-[var(--cs-text-secondary)] hover:text-[var(--cs-text-primary)]">
+                            <Link key={link.href} href={link.href}
+                                className="transition-all font-medium text-[var(--cs-text-secondary)] hover:text-[var(--cs-accent-green)] hover:drop-shadow-[0_0_8px_rgba(0,255,136,0.4)] uppercase tracking-[0.1em] text-sm"
+                                style={{ fontFamily: "var(--font-app-sans)" }}
+                            >
                                 {link.label}
                             </Link>
                         ))}
                         {isConnected && address ? (
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                    <Button variant="outline" className="rounded-full px-4 py-2 border-[var(--cs-border-light)] bg-[var(--cs-card-bg)] hover:bg-[var(--cs-bg-gray)]">
+                                    <Button variant="outline"
+                                        className="rounded-full px-5 py-2 border-[rgba(0,255,136,0.3)] bg-[rgba(0,255,136,0.04)] hover:bg-[rgba(0,255,136,0.1)] hover:shadow-[0_0_15px_rgba(0,255,136,0.25)] text-[var(--cs-accent-green)] transition-all uppercase tracking-[0.1em] text-sm font-semibold"
+                                    >
                                         <Wallet className="w-4 h-4 mr-2" />
                                         {truncateAddress(address)}
                                     </Button>
                                 </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end" className="w-48 font-[family-name:var(--font-app-sans)] tracking-[0.08em]">
+                                <DropdownMenuContent align="end" className="w-48 font-[family-name:var(--font-app-sans)] tracking-[0.08em] bg-[rgba(4,14,20,0.95)] border-[rgba(0,255,136,0.2)] backdrop-blur-xl">
                                     <DropdownMenuItem onClick={handleCopyAddress}>
                                         <Copy className="w-4 h-4 mr-2" /> Copy Address
                                     </DropdownMenuItem>
@@ -200,39 +199,39 @@ export function Navbar({ transparent = false }: NavbarProps) {
                                         </a>
                                     </DropdownMenuItem>
                                     <DropdownMenuSeparator />
-                                    <DropdownMenuItem onClick={() => disconnect()} className="text-red-600 focus:text-red-600">
+                                    <DropdownMenuItem onClick={() => disconnect()} className="text-[var(--cs-error)] focus:text-[var(--cs-error)]">
                                         <LogOut className="w-4 h-4 mr-2" /> Disconnect
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         ) : (
-                            <Button onClick={connect} disabled={isConnecting} className="app-btn-neutral rounded-full px-6 py-2">
+                            <Button onClick={connect} disabled={isConnecting} className="app-btn-accent rounded-full px-6 py-2">
                                 {isConnecting ? "Connecting..." : "Connect Wallet"}
                             </Button>
                         )}
                     </div>
                     <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
                         <SheetTrigger asChild className="md:hidden">
-                            <Button variant="ghost" size="icon"><Menu className="h-6 w-6" /></Button>
+                            <Button variant="ghost" size="icon" className="text-[var(--cs-accent-green)]"><Menu className="h-6 w-6" /></Button>
                         </SheetTrigger>
-                        <SheetContent side="right" className="w-[280px] font-[family-name:var(--font-app-sans)] tracking-[0.08em]">
+                        <SheetContent side="right" className="w-[280px] font-[family-name:var(--font-app-sans)] tracking-[0.08em] border-l-[rgba(0,255,136,0.2)]">
                             <div className="flex flex-col gap-6 mt-8">
                                 {isConnected && navLinks.map((link) => (
-                                    <Link key={link.href} href={link.href} onClick={() => setMobileOpen(false)} className="text-lg font-medium">{link.label}</Link>
+                                    <Link key={link.href} href={link.href} onClick={() => setMobileOpen(false)} className="text-lg font-medium text-[var(--cs-text-primary)] hover:text-[var(--cs-accent-green)] uppercase tracking-[0.1em]">{link.label}</Link>
                                 ))}
                                 {isConnected && address && (
                                     <>
-                                        <div className="border-t pt-4">
-                                            <p className="text-sm text-muted-foreground mb-2">Connected</p>
-                                            <p className="font-mono text-sm">{truncateAddress(address)}</p>
+                                        <div className="border-t border-[rgba(0,255,136,0.15)] pt-4">
+                                            <p className="text-sm text-[var(--cs-text-secondary)] mb-2 uppercase tracking-[0.15em]">Connected</p>
+                                            <p className="font-mono text-sm text-[var(--cs-accent-green)]">{truncateAddress(address)}</p>
                                         </div>
-                                        <Button variant="outline" onClick={() => { disconnect(); setMobileOpen(false); }} className="w-full justify-start text-red-600">
+                                        <Button variant="outline" onClick={() => { disconnect(); setMobileOpen(false); }} className="w-full justify-start text-[var(--cs-error)] border-[var(--cs-error)]">
                                             <LogOut className="w-4 h-4 mr-2" /> Disconnect
                                         </Button>
                                     </>
                                 )}
                                 {!isConnected && (
-                                    <Button onClick={() => { connect(); setMobileOpen(false); }} disabled={isConnecting} className="app-btn-neutral w-full rounded-full">
+                                    <Button onClick={() => { connect(); setMobileOpen(false); }} disabled={isConnecting} className="app-btn-accent w-full rounded-full">
                                         {isConnecting ? "Connecting..." : "Connect Wallet"}
                                     </Button>
                                 )}

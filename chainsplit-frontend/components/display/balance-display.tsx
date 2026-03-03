@@ -17,8 +17,8 @@ interface BalanceDisplayProps {
 }
 
 /**
- * Balance Display Component
- * Shows balance with color coding (positive=green, negative=red, zero=neutral)
+ * Balance Display Component — Cyberpunk styled
+ * Shows balance with neon color coding (positive=neon green, negative=neon red, zero=neutral)
  */
 export function BalanceDisplay({
     balance,
@@ -29,7 +29,6 @@ export function BalanceDisplay({
 }: BalanceDisplayProps) {
     const isPositive = balance > 0;
     const isNegative = balance < 0;
-    const isZero = balance === 0;
 
     const sizeClasses = {
         sm: "text-sm",
@@ -44,9 +43,9 @@ export function BalanceDisplay({
     };
 
     const colorClass = isPositive
-        ? "text-[var(--cs-success)]"
+        ? "text-[var(--cs-success)] drop-shadow-[0_0_6px_rgba(0,255,136,0.4)]"
         : isNegative
-            ? "text-[var(--cs-error)]"
+            ? "text-[var(--cs-error)] drop-shadow-[0_0_6px_rgba(255,51,85,0.4)]"
             : "text-[var(--cs-text-secondary)]";
 
     const Icon = isPositive
@@ -76,7 +75,7 @@ export function BalanceDisplay({
 }
 
 /**
- * Compact balance for tables/lists
+ * Compact balance chip — Cyberpunk styled with neon glow backgrounds
  */
 export function BalanceChip({
     balance,
@@ -92,8 +91,8 @@ export function BalanceChip({
         <span
             className={cn(
                 "inline-flex items-center px-2 py-1 rounded-full text-xs font-medium",
-                isPositive && "bg-[var(--cs-success)]/10 text-[var(--cs-success)]",
-                isNegative && "bg-[var(--cs-error)]/10 text-[var(--cs-error)]",
+                isPositive && "bg-[rgba(0,255,136,0.1)] text-[var(--cs-success)] shadow-[0_0_4px_rgba(0,255,136,0.15)]",
+                isNegative && "bg-[rgba(255,51,85,0.1)] text-[var(--cs-error)] shadow-[0_0_4px_rgba(255,51,85,0.15)]",
                 !isPositive && !isNegative && "bg-[var(--cs-bg-gray)] text-[var(--cs-text-secondary)]"
             )}
         >

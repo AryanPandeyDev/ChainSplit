@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, DM_Serif_Display, Space_Mono, DotGothic16, Orbitron } from "next/font/google";
+import { Inter, DM_Serif_Display, Space_Mono, DotGothic16, Orbitron, Share_Tech_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers";
 import { Toaster } from "@/components/ui/sonner";
@@ -33,6 +33,12 @@ const landingWordmark = Orbitron({
   weight: "700",
 });
 
+const shareTechMono = Share_Tech_Mono({
+  variable: "--font-cyber-mono",
+  subsets: ["latin"],
+  weight: "400",
+});
+
 export const metadata: Metadata = {
   title: "ChainSplit | Split Expenses, Settle On-Chain",
   description:
@@ -54,7 +60,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.variable} ${dmSerif.variable} ${appMono.variable} ${appDisplay.variable} ${landingWordmark.variable} font-sans antialiased`}
+        className={`${inter.variable} ${dmSerif.variable} ${appMono.variable} ${appDisplay.variable} ${landingWordmark.variable} ${shareTechMono.variable} font-sans antialiased`}
         style={{ backgroundColor: "var(--cs-bg-offwhite)" }}
       >
         <Providers>

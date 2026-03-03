@@ -29,7 +29,7 @@ interface ExpenseCardProps {
 }
 
 /**
- * Get state badge props
+ * Get state badge props — cyberpunk styled
  */
 function getStateBadge(state: ExpenseState) {
     switch (state) {
@@ -37,21 +37,21 @@ function getStateBadge(state: ExpenseState) {
             return {
                 label: "Pending",
                 variant: "outline" as const,
-                className: "border-[var(--cs-warning)] text-[var(--cs-warning)]",
+                className: "border-[var(--cs-warning)] text-[var(--cs-warning)] shadow-[0_0_6px_rgba(255,170,0,0.2)]",
                 icon: Clock,
             };
         case "accepted":
             return {
                 label: "Ready",
                 variant: "outline" as const,
-                className: "border-[var(--cs-accent-green)] text-[var(--cs-accent-green)]",
+                className: "border-[var(--cs-accent-green)] text-[var(--cs-accent-green)] shadow-[0_0_6px_rgba(0,255,136,0.2)]",
                 icon: Check,
             };
         case "settled":
             return {
                 label: "Settled",
                 variant: "default" as const,
-                className: "bg-[var(--cs-success)] text-white",
+                className: "bg-[var(--cs-success)] text-[var(--cs-text-on-light)] shadow-[0_0_8px_rgba(0,255,136,0.3)]",
                 icon: Check,
             };
         case "cancelled":
@@ -72,8 +72,7 @@ function truncateAddress(address: string) {
 }
 
 /**
- * Expense Card Component
- * Shows expense details with state and actions
+ * Expense Card Component — Cyberpunk styled
  */
 export function ExpenseCard({
     id,
@@ -102,7 +101,7 @@ export function ExpenseCard({
         <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-[var(--cs-card-bg)] rounded-xl border border-[var(--cs-border-light)] p-4 sm:p-5 hover:shadow-md transition-shadow"
+            className="cyber-card rounded-xl p-4 sm:p-5 group"
         >
             <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                 {/* Left: Info */}
@@ -136,7 +135,7 @@ export function ExpenseCard({
                 {/* Right: Amount & Actions */}
                 <div className="flex items-center gap-4 sm:gap-6">
                     <div className="text-right">
-                        <p className="text-lg font-semibold">
+                        <p className="text-lg font-semibold text-[var(--cs-text-primary)]">
                             ${totalAmount.toFixed(2)}
                         </p>
                         <p className="text-xs text-[var(--cs-text-secondary)]">
@@ -169,7 +168,7 @@ export function ExpenseCard({
                                 onClick={onCancel}
                                 size="sm"
                                 variant="outline"
-                                className="text-[var(--cs-error)] border-[var(--cs-error)] hover:bg-[var(--cs-error)]/10"
+                                className="text-[var(--cs-error)] border-[var(--cs-error)] hover:bg-[rgba(255,51,85,0.1)]"
                             >
                                 Cancel
                             </Button>
@@ -177,7 +176,7 @@ export function ExpenseCard({
 
                         <Link href={`/groups/${groupId}/expense/${id}`}>
                             <Button variant="ghost" size="icon">
-                                <ChevronRight className="w-5 h-5 text-[var(--cs-text-secondary)]" />
+                                <ChevronRight className="w-5 h-5 text-[var(--cs-text-secondary)] group-hover:text-[var(--cs-accent-green)]" />
                             </Button>
                         </Link>
                     </div>

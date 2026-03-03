@@ -149,7 +149,7 @@ export function CreateGroupModal({ open, onOpenChange, onGroupCreated }: CreateG
         <Dialog open={open} onOpenChange={handleClose}>
             <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto font-[family-name:var(--font-app-sans)] tracking-[0.08em]">
                 <DialogHeader>
-                    <DialogTitle className="text-xl">Create New Group</DialogTitle>
+                    <DialogTitle className="text-xl neon-text-green">Create New Group</DialogTitle>
                     <DialogDescription>
                         Set up a new expense group. Choose a settlement mode and add members.
                     </DialogDescription>
@@ -193,7 +193,7 @@ export function CreateGroupModal({ open, onOpenChange, onGroupCreated }: CreateG
                                 className={cn(
                                     "p-4 rounded-xl border-2 text-left transition-all",
                                     mode === "direct"
-                                        ? "border-[var(--cs-accent-green)] bg-[var(--cs-accent-green)]/5"
+                                        ? "border-[var(--cs-accent-green)] bg-[rgba(0,255,136,0.06)] shadow-[0_0_8px_rgba(0,255,136,0.1)]"
                                         : "border-[var(--cs-border-light)] hover:border-[var(--cs-text-secondary)]",
                                     isLoading && "opacity-50 cursor-not-allowed"
                                 )}
@@ -214,13 +214,13 @@ export function CreateGroupModal({ open, onOpenChange, onGroupCreated }: CreateG
                                 className={cn(
                                     "p-4 rounded-xl border-2 text-left transition-all",
                                     mode === "escrow"
-                                        ? "border-[var(--cs-accent-green)] bg-[var(--cs-accent-green)]/5"
+                                        ? "border-[var(--cs-accent-green)] bg-[rgba(0,255,136,0.06)] shadow-[0_0_8px_rgba(0,255,136,0.1)]"
                                         : "border-[var(--cs-border-light)] hover:border-[var(--cs-text-secondary)]",
                                     isLoading && "opacity-50 cursor-not-allowed"
                                 )}
                             >
                                 <div className="flex items-center gap-2 mb-2">
-                                    <Shield className="w-5 h-5" />
+                                    <Shield className="w-5 h-5 text-[var(--cs-neon-blue)]" />
                                     <span className="font-medium">Escrow</span>
                                 </div>
                                 <p className="text-xs text-[var(--cs-text-secondary)]">
@@ -358,7 +358,7 @@ export function CreateGroupModal({ open, onOpenChange, onGroupCreated }: CreateG
                         <Button
                             type="submit"
                             disabled={isLoading}
-                            className="app-btn-neutral flex-1 h-12"
+                            className="app-btn-accent flex-1 h-12"
                         >
                             {isLoading ? (
                                 <>

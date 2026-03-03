@@ -101,13 +101,13 @@ function OverviewTab({
         <div className="space-y-6">
             {/* Stats Grid */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-[var(--cs-card-bg)] rounded-xl p-4 border border-[var(--cs-border-light)]">
+                <div className="cyber-card rounded-xl p-4">
                     <p className="text-sm text-[var(--cs-text-secondary)]">Total Expenses</p>
                     <p className="text-2xl font-semibold mt-1">
                         {totalExpenses.toFixed(2)} {tokenSymbol}
                     </p>
                 </div>
-                <div className="bg-[var(--cs-card-bg)] rounded-xl p-4 border border-[var(--cs-border-light)]">
+                <div className="cyber-card rounded-xl p-4">
                     <p className="text-sm text-[var(--cs-text-secondary)]">Your Balance</p>
                     <p
                         className={cn(
@@ -119,11 +119,11 @@ function OverviewTab({
                         {userBalance.toFixed(2)} {tokenSymbol}
                     </p>
                 </div>
-                <div className="bg-[var(--cs-card-bg)] rounded-xl p-4 border border-[var(--cs-border-light)]">
+                <div className="cyber-card rounded-xl p-4">
                     <p className="text-sm text-[var(--cs-text-secondary)]">Pending</p>
                     <p className="text-2xl font-semibold mt-1">{pendingCount}</p>
                 </div>
-                <div className="bg-[var(--cs-card-bg)] rounded-xl p-4 border border-[var(--cs-border-light)]">
+                <div className="cyber-card rounded-xl p-4">
                     <p className="text-sm text-[var(--cs-text-secondary)]">Settled</p>
                     <p className="text-2xl font-semibold mt-1">{settledCount}</p>
                 </div>
@@ -140,9 +140,9 @@ function OverviewTab({
             )}
 
             {/* Members List */}
-            <div className="bg-[var(--cs-card-bg)] rounded-xl border border-[var(--cs-border-light)] overflow-hidden">
-                <div className="p-4 border-b border-[var(--cs-border-light)]">
-                    <h3 className="font-semibold">Members ({memberCount})</h3>
+            <div className="cyber-card rounded-xl overflow-hidden">
+                <div className="p-4 border-b border-[rgba(0,255,136,0.12)]">
+                    <h3 className="font-semibold neon-text-blue">Members ({memberCount})</h3>
                 </div>
                 <div className="divide-y divide-[var(--cs-border-light)]">
                     {members.map((memberAddr) => (
@@ -186,8 +186,8 @@ function MemberRow({
     return (
         <div className="p-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[var(--cs-bg-gray)] flex items-center justify-center">
-                    <Users className="w-5 h-5 text-[var(--cs-text-secondary)]" />
+                <div className="w-10 h-10 rounded-full bg-[rgba(0,212,255,0.08)] border border-[rgba(0,212,255,0.15)] flex items-center justify-center">
+                    <Users className="w-5 h-5 text-[var(--cs-neon-blue)]" />
                 </div>
                 <span className="font-mono text-sm">{shortAddr}</span>
             </div>
@@ -233,10 +233,10 @@ function DirectWithdrawSection({
     if (withdrawable <= 0 && !wSuccess) return null;
 
     return (
-        <div className="bg-[var(--cs-card-bg)] rounded-xl border border-[var(--cs-border-light)] p-4">
+        <div className="cyber-card rounded-xl p-4">
             <div className="flex items-center justify-between">
                 <div>
-                    <h3 className="font-semibold">Withdrawable Balance</h3>
+                    <h3 className="font-semibold neon-text-blue">Withdrawable Balance</h3>
                     <p className="text-lg text-[var(--cs-accent-green)] font-semibold mt-1">
                         {withdrawable.toFixed(2)} {tokenSymbol}
                     </p>
@@ -413,7 +413,7 @@ function ExpenseCard({
 
     return (
         <Link href={`/groups/${groupAddress}/expense/${expense.id}`}>
-            <div className="bg-[var(--cs-card-bg)] rounded-xl border border-[var(--cs-border-light)] p-4 cursor-pointer hover:border-[var(--cs-accent-green)] transition-colors">
+            <div className="cyber-card rounded-xl p-4 cursor-pointer group">
                 <div className="flex items-center justify-between">
                     <div>
                         <div className="flex items-center gap-2 mb-1">
@@ -613,9 +613,9 @@ function DepositsTab({
 
     return (
         <div className="space-y-4">
-            <div className="bg-[var(--cs-card-bg)] rounded-xl border border-[var(--cs-border-light)] overflow-hidden">
-                <div className="p-4 border-b border-[var(--cs-border-light)]">
-                    <h3 className="font-semibold">Deposit Status</h3>
+            <div className="cyber-card rounded-xl overflow-hidden">
+                <div className="p-4 border-b border-[rgba(0,255,136,0.12)]">
+                    <h3 className="font-semibold neon-text-blue">Deposit Status</h3>
                 </div>
                 <div className="divide-y divide-[var(--cs-border-light)]">
                     {members.map((memberAddr) => (
@@ -663,8 +663,8 @@ function SettingsTab({ groupAddress }: { groupAddress: string }) {
 
     return (
         <div className="space-y-6">
-            <div className="bg-[var(--cs-card-bg)] rounded-xl border border-[var(--cs-border-light)] p-4">
-                <h3 className="font-semibold mb-4">Group Contract</h3>
+            <div className="cyber-card rounded-xl p-4">
+                <h3 className="font-semibold mb-4 neon-text-blue">Group Contract</h3>
                 <div className="flex items-center gap-2">
                     <code className="flex-1 bg-[var(--cs-bg-gray)] px-3 py-2 rounded-lg text-sm font-mono">
                         {groupAddress}
@@ -750,7 +750,7 @@ function EscrowActionBar({
     const isDeadlinePassed = deadlineDate ? deadlineDate < new Date() : false;
 
     return (
-        <div className="bg-[var(--cs-card-bg)] rounded-xl border border-[var(--cs-border-light)] p-4 mb-6">
+        <div className="cyber-card rounded-xl p-4 mb-6">
             <div className="flex flex-wrap items-center gap-3">
                 {/* Pending: Deposit or Cancel */}
                 {isPending && !deposited && !depositSuccess && (
@@ -905,7 +905,7 @@ export default function GroupDetailPage() {
 
     if (isLoading || (!directInfo && !escrowInfo)) {
         return (
-            <div className="app-ui min-h-screen bg-[var(--cs-bg-offwhite)]">
+            <div className="app-ui min-h-screen cyber-bg">
                 <Navbar />
                 <div className="flex items-center justify-center py-20">
                     <Loader2 className="w-10 h-10 animate-spin text-[var(--cs-text-secondary)]" />
@@ -935,7 +935,7 @@ export default function GroupDetailPage() {
     }
 
     return (
-        <div className="app-ui min-h-screen bg-[var(--cs-bg-offwhite)]">
+        <div className="app-ui min-h-screen cyber-bg">
             <Navbar />
 
             <main className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-8">
@@ -952,7 +952,7 @@ export default function GroupDetailPage() {
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
                     <div>
                         <div className="flex items-center gap-3">
-                            <h1 className="text-3xl font-semibold text-[var(--cs-text-primary)]">
+                            <h1 className="text-3xl font-semibold neon-text-green">
                                 {name}
                             </h1>
                             <Badge
